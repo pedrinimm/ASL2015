@@ -54,7 +54,7 @@ public class DatabaseConnectorServer {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		
-		int ConnectionCapacity;
+		
 		DatabaseConnectorServer connectingServer;
 		Connection connection_1;
 		
