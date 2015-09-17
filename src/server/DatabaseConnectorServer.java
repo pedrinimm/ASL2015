@@ -2,6 +2,7 @@ package server;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.logging.Level;
 
 import org.postgresql.ds.PGPoolingDataSource;
 
@@ -52,7 +53,26 @@ public class DatabaseConnectorServer {
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-
+		
+		int ConnectionCapacity;
+		DatabaseConnectorServer connectingServer;
+		Connection connection_1;
+		
+		connectingServer=new DatabaseConnectorServer();
+		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+		
+		
+		try{
+			connection_1=connectingServer.getDatabaseConnection();
+			//cheing if the connection that is retunring is not closed
+			if(!connection_1.isClosed()){
+				System.out.println("conencted!!");
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 }
