@@ -1,8 +1,10 @@
 package server;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.logging.Level;
+
 
 import org.postgresql.ds.PGPoolingDataSource;
 
@@ -56,21 +58,53 @@ public class DatabaseConnectorServer {
 		
 		
 		DatabaseConnectorServer connectingServer;
-		Connection connection_1;
+		Connection connection_1 = null;
 		
 		connectingServer=new DatabaseConnectorServer();
 		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
 		
 		
+		//This string contains the name of the store procedure in the database
+		String callableFunction = "{call get_message()}";
+		CallableStatement callFunction = null;
+		
 		try{
 			connection_1=connectingServer.getDatabaseConnection();
-			//cheing if the connection that is retunring is not closed
+			//checking if the connection that is returning is not closed
 			if(!connection_1.isClosed()){
 				System.out.println("conencted!!");
+				
+				//prepare callable function
+				callFunction =connection_1.prepareCall(callableFunction);
+				callFunction.execute();
+				ResultSet result= callFunction.getResultSet();
+				result.next();
+				System.out.println(result.getString(1));
+				
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			//close the database connnection
+			if(callFunction!=null){
+				try {
+					callFunction.close();
+					System.out.println("Call function closed");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			if(connection_1!=null){
+				try {
+					connection_1.close();
+					System.out.println("Connection closed");
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
