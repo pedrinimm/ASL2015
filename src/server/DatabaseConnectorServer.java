@@ -71,7 +71,7 @@ public class DatabaseConnectorServer {
 				System.out.println("conencted!!");
 				//the parameter in the print if the call of the method
 				//inside that class that calls the store procedure
-				System.out.println(database.GetMessage.execute_query(connection_1));
+				System.out.println(database.GetUser.execute_query(connection_1,"user_1"));
 				
 			}
 		} catch (Exception e) {
