@@ -26,9 +26,9 @@ public class Message {
 		long time = System.currentTimeMillis();
 		this.timestamp=new Timestamp(time);
 	}
-	public Message(){
-		this.message="";
-		this.sender="";
+	public Message(String sender){
+		this.message="Demo Text";
+		this.sender=sender;
 		this.reciever="";
 		long time = System.currentTimeMillis();
 		this.timestamp=new Timestamp(time);

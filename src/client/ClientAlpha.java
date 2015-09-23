@@ -5,9 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Date;
 import java.util.Random;
-import java.util.logging.Level;
 
 
 
@@ -46,7 +44,7 @@ public class ClientAlpha implements Runnable{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String msg = "Connection accepted " + clientSocket.getInetAddress() + ":" + clientSocket.getPort();
+		String msg = "Connection accepted " + clientSocket.getInetAddress() + ":" + clientSocket.getPort()+" User: "+username ;
 		System.out.println(msg);
 		
 //		Pick a random option		

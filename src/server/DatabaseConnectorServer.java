@@ -37,7 +37,7 @@ public class DatabaseConnectorServer {
 			con = connectionPool.getConnection();
 			//with auto-commit on false no instruction will be applied until I set commit
 			//manually
-			con.setAutoCommit(false);
+			con.setAutoCommit(true);
 	        return con;
 			
 		} catch (SQLException e) {
@@ -68,7 +68,7 @@ public class DatabaseConnectorServer {
 			connection_1=connectingServer.getDatabaseConnection();
 			//checking if the connection that is returning is not closed
 			if(!connection_1.isClosed()){
-				System.out.println("conencted!!");
+				System.out.println("conencted to database!!");
 				//the parameter in the print if the call of the method
 				//inside that class that calls the store procedure
 				System.out.println(database.GetUser.execute_query(connection_1,"user_1"));
