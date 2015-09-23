@@ -8,7 +8,7 @@ import java.util.concurrent.Executors;
 
 public class Middleware implements Runnable{
 
-	protected int          serverPort   = 8080;
+	protected int          serverPort   = 8090;
     protected ServerSocket serverSocket = null;
     protected boolean      isStopped    = false;
     protected Thread       runningThread= null;
@@ -74,8 +74,8 @@ public class Middleware implements Runnable{
 		} catch (InterruptedException e) {
 		    e.printStackTrace();
 		}
-		System.out.println("Stopping Server");
-		server.stop();
+		//System.out.println("Stopping Server");
+		//server.stop();
 
 	}
 
