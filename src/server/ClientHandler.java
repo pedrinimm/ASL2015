@@ -7,7 +7,9 @@ import java.net.Socket;
 import java.sql.Connection;
 
 import entities.Message;
+import entities.Protocol;
 import entities.Queue;
+import entities.User;
 
 public class ClientHandler implements Runnable{
 
@@ -28,10 +30,12 @@ public class ClientHandler implements Runnable{
 	}
 	 public void run(){
 		 try {
-			 
+//			 	create the object protocol to understand what the client wants
+			 	Protocol objectTransit=new Protocol(99);
 //			 	read users username pendant
 	            input  = new ObjectInputStream(clientSocket.getInputStream());
-	            int clientOption = (Integer) input.readObject();
+	            objectTransit = (Protocol) input.readObject();
+	            int clientOption = objectTransit.protocolNum;
 	            output = new ObjectOutputStream(clientSocket.getOutputStream());
 	            output.writeObject("Copy That");
 	            long time = System.currentTimeMillis();
@@ -58,6 +62,7 @@ public class ClientHandler implements Runnable{
 	            			String queueID= database.GetQueue.execute_query(connection_1, "general");
 	            			if(!queueID.equals("")){
 	            				database.CreateNewMessage.execute_query(connection_1, newMessage, queueID);
+	            				output.writeObject("Message created");
 	            			}else{//if doesn't exists create general queue
 //	            				create general queue
 	            				Queue newQueue=new Queue("general");
@@ -66,10 +71,13 @@ public class ClientHandler implements Runnable{
 	            				queueID = database.GetQueue.execute_query(connection_1, "general");
 //	            				after creating a new queue then insert message into the queue
 	            				database.CreateNewMessage.execute_query(connection_1, newMessage, queueID);
+	            				output.writeObject("Message created");
 	            			}
 	            			break;
 	            		case 4:
 //	            			create a new queue
+//	            			check if the queue doesn't exist 
+	            			
 	            			break;
 	            		case 5:
 //	            			create a new message for a specific receiver
@@ -77,10 +85,25 @@ public class ClientHandler implements Runnable{
 	            		case 6:
 //	            			delete queue
 	            			break;
+	            		case 99:
+//	            			This means this is the first message from the client so we have to check
+//	            			if the client already exists or if it's a new one
+	            			
+//	            			Step 1 check user in database
+	            			String userID = database.GetUser.execute_query(connection_1, objectTransit.newUser.name);
+	            			if(!userID.equals("")){
+	            				System.out.println("this user already exist");
+	            				output.writeObject("this user already exist");
+	            			}else{
+	            				User newUser=objectTransit.newUser;
+	            				database.CreateNewUser.execute_query(connection_1, newUser);
+	            				output.writeObject("User Created");
+	            			}
+	            			break;
 	            			
 	            		
 	            	}
-	            	output.writeObject("Copy That");
+	            	
 	            	time = System.currentTimeMillis();
 	            	System.out.println("Request processed: " + time);
 	            }

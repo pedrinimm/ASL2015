@@ -7,6 +7,9 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.Random;
 
+import entities.Protocol;
+import entities.User;
+
 
 
 public class ClientAlpha implements Runnable{
@@ -51,12 +54,17 @@ public class ClientAlpha implements Runnable{
 		Random rand= new Random();
 		int randomNum=rand.nextInt(9);
 		String messageServer="";
+		
+		//This is the protocol variable to figure out what to ask for to the client;
+		User client = new User(this.username);
+		Protocol transitObject= new Protocol(99,client);
+		
 //		
 ////		Initialize the streamers for the input and output
 		try {
 			
 			this.output = new ObjectOutputStream(clientSocket.getOutputStream());
-			output.writeObject(randomNum);
+			output.writeObject(transitObject);
 			this.input  = new ObjectInputStream(clientSocket.getInputStream());
 			messageServer=(String) input.readObject();
 			System.out.println(messageServer);
