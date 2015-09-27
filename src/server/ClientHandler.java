@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable{
 	 public void run(){
 		 try {
 //			 	create the object protocol to understand what the client wants
-			 	Protocol objectTransit=new Protocol(99);
+			 	Protocol objectTransit=new Protocol(99,"");
 //			 	read users username pendant
 	            input  = new ObjectInputStream(clientSocket.getInputStream());
 	            objectTransit = (Protocol) input.readObject();
@@ -40,16 +40,38 @@ public class ClientHandler implements Runnable{
 	            output.writeObject("Copy That");
 	            long time = System.currentTimeMillis();
 	            while(clientOption!=7){
-	            	clientOption = (Integer) input.readObject();
 	            	switch(clientOption){
 	            		case 0:
-//	            			for reading message
+//	            			read the message
+	            			Message newMessage_y = database.GetMessage.execute_query(connection_1,objectTransit.userName);
+	           	         
+//	            			delete the message after reading
+	            			database.DeleteMessage.execute_query(connection_1, newMessage_y.messageID.toString());	
+	            			
+//	            			return the message
+	            			output.writeObject(newMessage_y);
 	            			break;
 	            		case 1:
 //	            			reading special message for me
+	            			Message newMessage_1 = database.GetOwnMessage.execute_query(connection_1, objectTransit.userName);
+//	            			delete the message after reading
+	            			database.DeleteMessage.execute_query(connection_1, newMessage_1.messageID.toString());
+//	            			return the message
+	            			output.writeObject(newMessage_1);
+	            			
 	            			break;
 	            		case 2:
 //	            			looking for a message from
+	            			
+	            			Message newMessage_x = database.GetMessageFrom.execute_query(connection_1,objectTransit.userName,
+	            					objectTransit.newMessage.sender);
+	         
+//	            			delete the message after reading
+	            			database.DeleteMessage.execute_query(connection_1, newMessage_x.messageID.toString());
+	            			
+	            			
+//	            			return the message
+	            			output.writeObject(newMessage_x);
 	            			break;
 	            		case 3:
 //	            			create a message
@@ -76,14 +98,55 @@ public class ClientHandler implements Runnable{
 	            			break;
 	            		case 4:
 //	            			create a new queue
-//	            			check if the queue doesn't exist 
+	            			
+//	            			Check if general queue Exists
+	            			String queueID_3= database.GetQueue.execute_query(connection_1, objectTransit.newQueue.name);
+	            			if(!queueID_3.equals("")){
+	            				output.writeObject("Queue Exist");
+	            			}else{//queue doesn't exist so must be created
+//	            				create general queue
+	            				Queue newQueue=new Queue(objectTransit.newQueue.name);
+	            				database.CreateNewQueue.execute_query(connection_1, newQueue);
+	            				output.writeObject("Queue created");
+	            			}
 	            			
 	            			break;
 	            		case 5:
 //	            			create a new message for a specific receiver
+	            			
+//	            			Steps for creating a new message
+//	            			read the message from the client
+	            			Message newMessage_2=new Message("username");
+	            			newMessage_2 = objectTransit.newMessage;
+//	            			Check if general queue Exists
+	            			String queueID_4= database.GetQueue.execute_query(connection_1, objectTransit.newQueue.name);
+	            			if(!queueID_4.equals("")){
+	            				database.CreateNewMessage.execute_query(connection_1, newMessage_2, queueID_4);
+	            				output.writeObject("Message created");
+	            			}else{//if doesn't exists create general queue
+//	            				create general queue
+	            				Queue newQueue=new Queue(objectTransit.newQueue.name);
+	            				database.CreateNewQueue.execute_query(connection_1, newQueue);
+//	            				get the new queueid of the general queue
+	            				queueID_4 = database.GetQueue.execute_query(connection_1, objectTransit.newQueue.name);
+//	            				after creating a new queue then insert message into the queue
+	            				database.CreateNewMessage.execute_query(connection_1, newMessage_2, queueID_4);
+	            				output.writeObject("Message created");
+	            			}
 	            			break;
 	            		case 6:
 //	            			delete queue
+//	            			Check if general queue Exists
+	            			String queueID_2= database.GetQueue.execute_query(connection_1,objectTransit.newQueue.name);
+	            			if(!queueID_2.equals("")){
+//	            				delete all messages in that queue first
+	            				database.DeleteMessagesInQueue.execute_query(connection_1, queueID_2);
+//	            				then delete queue
+	            				database.DeleteQueue.execute_query(connection_1, queueID_2);
+	            				output.writeObject("Queue deleted");
+	            			}else{//if doesn't exists create general queue
+	            				output.writeObject("Queue doesn't exist");
+	            			}
 	            			break;
 	            		case 99:
 //	            			This means this is the first message from the client so we have to check
@@ -100,9 +163,9 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject("User Created");
 	            			}
 	            			break;
-	            			
-	            		
 	            	}
+	            	objectTransit = (Protocol) input.readObject();
+        			clientOption = objectTransit.protocolNum;
 	            	
 	            	time = System.currentTimeMillis();
 	            	System.out.println("Request processed: " + time);

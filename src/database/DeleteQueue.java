@@ -2,47 +2,35 @@ package database;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.UUID;
 
-import entities.Message;
 
-public class GetMessage {
+public class DeleteQueue {
 	//This string contains the name of the store procedure in the database
-	public static final String callableFunction = "{call get_message(?)}";
+	public static final String callableFunction = "{call delete_queue(?)}";
 	
-	public synchronized static Message execute_query(Connection con, String receiver){
-		CallableStatement callFunction = null;
-		Message newMessage=new Message();
+	
+	public synchronized static String execute_query(Connection con,  String queue_name){
+		
+		CallableStatement callFunction =null;
+		
 		try{
 			
 			//checking if the connection that is returning is not closed
 			if(!con.isClosed()){
 				System.out.println("conencted!!");
 				
-				//prepare callable function
-				callFunction =con.prepareCall(callableFunction);
+				callFunction = con.prepareCall(callableFunction);
 				
 				//setting the parameter for the callable function
-				callFunction.setString(1, receiver);
+				callFunction.setString(1, queue_name);
 				
 				callFunction.execute();
 				ResultSet result= callFunction.getResultSet();
 				result.next();
 				System.out.println(result.getString(1));
-				newMessage.message=result.getString(1);
-				newMessage.sender=result.getString(2);
-				newMessage.reciever=result.getString(3);
-				newMessage.messageID=UUID.fromString(result.getString(4));
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-			    Date parsedDate = (Date) dateFormat.parse(result.getString(5));
-				newMessage.timestamp= new Timestamp(parsedDate.getTime());
-				
-				return newMessage;
+				return result.getString(1);
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -66,4 +54,5 @@ public class GetMessage {
 		// TODO Auto-generated method stub
 
 	}
+
 }

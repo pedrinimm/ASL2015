@@ -34,6 +34,14 @@ public class Message {
 		this.timestamp=new Timestamp(time);
 		this.messageID=UUID.randomUUID();
 	}
+	public Message(){
+		this.message="Demo Text";
+		this.sender="";
+		this.reciever="";
+		long time = System.currentTimeMillis();
+		this.timestamp=new Timestamp(time);
+		this.messageID=UUID.randomUUID();
+	}
 	public String getReciever(){
 		return this.reciever;
 	}

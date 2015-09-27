@@ -57,7 +57,7 @@ public class ClientAlpha implements Runnable{
 		
 		//This is the protocol variable to figure out what to ask for to the client;
 		User client = new User(this.username);
-		Protocol transitObject= new Protocol(99,client);
+		Protocol transitObject= new Protocol(99,client,client.name);
 		
 //		
 ////		Initialize the streamers for the input and output
