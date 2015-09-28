@@ -3,7 +3,11 @@ package entities;
 import java.sql.Timestamp;
 import java.util.UUID;
 
-public class Message {
+public class Message implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String message;
 	public Timestamp timestamp;
 	public String sender;

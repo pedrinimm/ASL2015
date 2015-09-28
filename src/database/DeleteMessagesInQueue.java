@@ -18,7 +18,7 @@ public class DeleteMessagesInQueue {
 				
 				//checking if the connection that is returning is not closed
 				if(!con.isClosed()){
-					System.out.println("conencted!!");
+//					System.out.println("conencted!!");
 					
 					callFunction = con.prepareCall(callableFunction);
 					
@@ -39,7 +39,7 @@ public class DeleteMessagesInQueue {
 				if(callFunction!=null){
 					try {
 						callFunction.close();
-						System.out.println("Call function closed");
+//						System.out.println("Call function closed");
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

@@ -6,7 +6,11 @@ import java.util.UUID;
 
 
 
-public class Queue {
+public class Queue implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String name;
 	public UUID queueId;
 	public Timestamp timestamp;

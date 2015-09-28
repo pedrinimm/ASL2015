@@ -2,11 +2,9 @@ package database;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 import entities.Message;
@@ -22,7 +20,7 @@ public class GetMessage {
 			
 			//checking if the connection that is returning is not closed
 			if(!con.isClosed()){
-				System.out.println("conencted!!");
+//				System.out.println("conencted!!");
 				
 				//prepare callable function
 				callFunction =con.prepareCall(callableFunction);
@@ -33,15 +31,16 @@ public class GetMessage {
 				callFunction.execute();
 				ResultSet result= callFunction.getResultSet();
 				result.next();
-				System.out.println(result.getString(1));
-				newMessage.message=result.getString(1);
-				newMessage.sender=result.getString(2);
-				newMessage.reciever=result.getString(3);
-				newMessage.messageID=UUID.fromString(result.getString(4));
-				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
-			    Date parsedDate = (Date) dateFormat.parse(result.getString(5));
-				newMessage.timestamp= new Timestamp(parsedDate.getTime());
-				
+				if(result.getInt(7)==1){
+					System.out.println("No message found!");
+				}else{
+					System.out.println(result.getString(1));
+					newMessage.message=result.getString(1);
+					newMessage.sender=result.getString(2);
+					newMessage.reciever=result.getString(3);
+					newMessage.messageID=UUID.fromString(result.getString(4));
+					newMessage.timestamp= Timestamp.valueOf(result.getString(5));
+				}
 				return newMessage;
 			}
 		} catch (Exception e) {
@@ -52,7 +51,7 @@ public class GetMessage {
 			if(callFunction!=null){
 				try {
 					callFunction.close();
-					System.out.println("Call function closed");
+//					System.out.println("Call function closed");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

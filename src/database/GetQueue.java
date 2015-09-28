@@ -5,10 +5,15 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import server.DatabaseConnectorServer;
+
 public class GetQueue {
 	//This string contains the name of the store procedure in the database
 	public static final String callableFunction = "{call get_queue_id(?)}";
 	
+//	for testing the databse connection
+		public static Connection connection_1 = null;
+		public static DatabaseConnectorServer connectingServer;
 	
 	public synchronized static String execute_query(Connection con, String queue_name){
 		
@@ -18,7 +23,7 @@ public class GetQueue {
 			
 			//checking if the connection that is returning is not closed
 			if(!con.isClosed()){
-				System.out.println("conencted!!");
+//				System.out.println("conencted!!");
 				
 				callFunction = con.prepareCall(callableFunction);
 				
@@ -28,8 +33,13 @@ public class GetQueue {
 				callFunction.execute();
 				ResultSet result= callFunction.getResultSet();
 				result.next();
-				System.out.println(result.getString(1));
-				return result.getString(1);
+				if(result.getString(1)==null){
+					System.out.println("queue not found");
+					return "";
+				}else{
+					System.out.println(result.getString(1));
+					return result.getString(1);
+				}
 			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -39,7 +49,7 @@ public class GetQueue {
 			if(callFunction!=null){
 				try {
 					callFunction.close();
-					System.out.println("Call function closed");
+//					System.out.println("Call function closed");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -52,6 +62,31 @@ public class GetQueue {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-	}
+
+		
+				connectingServer=new DatabaseConnectorServer();
+				connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+				try{
+					connection_1=connectingServer.getDatabaseConnection();
+					//checking if the connection that is returning is not closed
+					if(!connection_1.isClosed()){
+						System.out.println("conencted to database!!");
+						//the parameter in the print if the call of the method
+						//inside that class that calls the store procedure
+//						System.out.println(database.GetUser.execute_query(connection_1,"user_1"));
+						
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				
+//				Step 1 check user in database
+				String userID = database.GetQueue.execute_query(connection_1, "general_z");
+				System.out.println(userID);
+		}
+
+	
 
 }

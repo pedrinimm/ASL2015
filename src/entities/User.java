@@ -2,7 +2,11 @@ package entities;
 
 import java.util.UUID;
 
-public class User {
+public class User implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String name;
 	public UUID userId;
 

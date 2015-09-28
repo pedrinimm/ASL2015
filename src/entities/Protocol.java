@@ -1,11 +1,17 @@
 package entities;
 
-public class Protocol {
+public class Protocol implements java.io.Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public String userName;
 	public int protocolNum;
 	public Message newMessage;
 	public Queue newQueue;
 	public User newUser;
+	public int counter=0;
+	public String message="";
 	
 	public Protocol(int protocol, String userName1){
 		this.userName=userName1;

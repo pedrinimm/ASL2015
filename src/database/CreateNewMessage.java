@@ -25,7 +25,7 @@ public class CreateNewMessage {
 				
 				//checking if the connection that is returning is not closed
 				if(!con.isClosed()){
-					System.out.println("conencted!!");
+//					System.out.println("conencted!!");
 					
 					//prepare callable function
 					callFunction =con.prepareCall(callableFunction);
@@ -51,7 +51,7 @@ public class CreateNewMessage {
 				if(callFunction!=null){
 					try {
 						callFunction.close();
-						System.out.println("Call function closed");
+//						System.out.println("Call function closed");
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -82,6 +82,7 @@ public class CreateNewMessage {
 //		create new message
 		Message newMessage=new Message("sender_1");
 		String queueID="";
+		newMessage.reciever="perritos";
 		queueID = database.GetQueue.execute_query(connection_1, "general");
 		if(!queueID.equals("")){
 			database.CreateNewMessage.execute_query(connection_1, newMessage, queueID);

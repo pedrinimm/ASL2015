@@ -23,7 +23,7 @@ public class GetUser {
 				
 				//checking if the connection that is returning is not closed
 				if(!con.isClosed()){
-					System.out.println("conencted!!");
+//					System.out.println("conencted!!");
 					
 					callFunction = con.prepareCall(callableFunction);
 					
@@ -33,8 +33,14 @@ public class GetUser {
 					callFunction.execute();
 					ResultSet result= callFunction.getResultSet();
 					result.next();
-					System.out.println(result.getString(1));
-					return result.getString(1);
+					if(result.getString(1)==null){
+						System.out.println("user not found");
+						return "";
+					}else{
+						System.out.println(result.getString(1));
+						return result.getString(1);
+					}
+					
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -44,7 +50,7 @@ public class GetUser {
 				if(callFunction!=null){
 					try {
 						callFunction.close();
-						System.out.println("Call function closed");
+//						System.out.println("Call function closed");
 					} catch (SQLException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -78,7 +84,7 @@ public class GetUser {
 		
 		
 //		Step 1 check user in database
-		String userID = database.GetUser.execute_query(connection_1, "user_z");
+		String userID = database.GetUser.execute_query(connection_1, "user_1");
 		System.out.println(userID);
 	}
 

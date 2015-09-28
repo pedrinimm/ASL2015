@@ -27,7 +27,7 @@ public class CreateNewUser {
 			
 			//checking if the connection that is returning is not closed
 			if(!con.isClosed()){
-				System.out.println("conencted!!");
+//				System.out.println("conencted!!");
 				
 				//prepare callable function
 				callFunction =con.prepareCall(callableFunction);
@@ -50,7 +50,7 @@ public class CreateNewUser {
 			if(callFunction!=null){
 				try {
 					callFunction.close();
-					System.out.println("Call function closed");
+//					System.out.println("Call function closed");
 				} catch (SQLException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

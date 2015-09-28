@@ -5,9 +5,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.sql.Timestamp;
 import java.util.Random;
 
+import entities.Message;
 import entities.Protocol;
+import entities.Queue;
 import entities.User;
 
 
@@ -52,21 +55,35 @@ public class ClientAlpha implements Runnable{
 		
 //		Pick a random option		
 		Random rand= new Random();
-		int randomNum=rand.nextInt(9);
+		int randomNum=rand.nextInt(8);
 		String messageServer="";
 		
 		//This is the protocol variable to figure out what to ask for to the client;
 		User client = new User(this.username);
 		Protocol transitObject= new Protocol(99,client,client.name);
-		
+		int counter=transitObject.counter;
 //		
 ////		Initialize the streamers for the input and output
 		try {
 			
 			this.output = new ObjectOutputStream(clientSocket.getOutputStream());
+			transitObject.counter=counter;
+			output.reset();
 			output.writeObject(transitObject);
+			output.flush();
+			counter++;
 			this.input  = new ObjectInputStream(clientSocket.getInputStream());
-			messageServer=(String) input.readObject();
+			
+			transitObject=(Protocol) input.readObject();
+			while(true){
+				if(transitObject.counter+1==counter){
+					break;
+				}else{
+					transitObject=(Protocol) input.readObject();
+				}
+			}
+			messageServer=transitObject.message;
+			
 			System.out.println(messageServer);
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -75,16 +92,207 @@ public class ClientAlpha implements Runnable{
 		
 		
 		while(! isStopped()){
-			randomNum=rand.nextInt(9);
-			System.out.println("The option was "+randomNum);
+			randomNum=rand.nextInt(8);
+			//System.out.println("The option was "+randomNum);
 			try {
-				output.writeObject(randomNum);
-				messageServer=(String) input.readObject();
-				System.out.println(messageServer);
+//				object that will be use to handle the communication between client and server
+				Message forServer=new Message(this.username);
+				String replayFromServer="";
+				Queue queueForServer=new Queue();
+				queueForServer.name="general";
+				
+//				Options of services that the server provides
+
+				while(randomNum!=7){
+					System.out.println("The option was "+randomNum);
+					switch(randomNum){
+						case 0:
+//							read message
+							transitObject.protocolNum=randomNum;
+							transitObject.newMessage=forServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							forServer= transitObject.newMessage;
+							
+							System.out.println(forServer.messageID);
+							break;
+						case 1:
+//							reading message for me 
+							transitObject.protocolNum=randomNum;
+							transitObject.userName=this.username;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							forServer= transitObject.newMessage;
+							
+							
+							System.out.println(forServer.messageID);
+							break;
+						case 2:
+//							looking for message sent by someone 
+							transitObject.protocolNum=randomNum;
+							transitObject.userName=this.username;
+							forServer.sender="user_z";
+							transitObject.newMessage=forServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							forServer= transitObject.newMessage;
+					
+							
+							System.out.println(forServer.messageID);
+							break;
+						case 3:
+//							create a new message
+							transitObject.protocolNum=randomNum;
+							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username);
+							transitObject.newMessage=forServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							replayFromServer=transitObject.message;
+					
+							
+							
+							
+							System.out.println(replayFromServer);
+							break;
+						case 4:
+//							create a new queue
+							transitObject.protocolNum=randomNum;
+							queueForServer.name="newName";
+							transitObject.newQueue=queueForServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							replayFromServer=transitObject.message;
+							
+							System.out.println(replayFromServer);
+							break;
+						case 5:
+//							create a new message for a specific receiver
+							transitObject.protocolNum=randomNum;
+							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,"user_z");
+							transitObject.newMessage=forServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							replayFromServer=transitObject.message;
+							
+							System.out.println(replayFromServer);
+							break;
+						case 6:
+//							delete queue
+							transitObject.protocolNum=randomNum;
+							queueForServer.name="newName";
+							transitObject.newQueue=queueForServer;
+							transitObject.counter=counter;
+							output.reset();
+							output.writeObject(transitObject);
+							output.flush();
+							counter++;
+							
+//							condicion para sincronizar los objectos transferidos
+							transitObject=(Protocol) input.readObject();
+							while(true){
+								if(transitObject.counter+1==counter){
+									break;
+								}else{
+									transitObject=(Protocol) input.readObject();
+								}
+							}
+							replayFromServer=transitObject.message;
+							
+							System.out.println(replayFromServer);
+							break;
+					
+					}
+					randomNum=rand.nextInt(8);
+					System.out.println("ACK option was "+randomNum);
+				}
+				
+//				output.writeObject(randomNum);
+//				messageServer=(String) input.readObject();
+				replayFromServer="I am done!!";
+				System.out.println(replayFromServer);
 			} catch (IOException | ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 			if(randomNum==7){
 				stop();
 			}
@@ -125,7 +333,7 @@ public class ClientAlpha implements Runnable{
 		// TODO Auto-generated method stub
 		int portNumber = 9000;
 		String serverAddress = "localhost";
-		String userName = "user_z";
+		String userName = "user_cool";
 
 		
 //		This switch is used to determine how to initialize the client
