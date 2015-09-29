@@ -171,6 +171,9 @@ public class ClientHandler implements Runnable{
 //	            			read the message from the client
 	            			Message newMessage_2=new Message("username");
 	            			newMessage_2 = objectTransit.newMessage;
+//	            			initialize queue of the object transit ---is going nulll 
+	            			objectTransit.newQueue=new Queue("newQueue");
+	            			
 //	            			Check if general queue Exists
 	            			String queueID_4= database.GetQueue.execute_query(connection_1, objectTransit.newQueue.name);
 	            			if(!queueID_4.equals("")){

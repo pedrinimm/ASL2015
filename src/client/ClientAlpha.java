@@ -104,6 +104,9 @@ public class ClientAlpha implements Runnable{
 //				Options of services that the server provides
 
 				while(randomNum!=7){
+//					this manual assignmetn is for debuging reasons
+//					randomNum=5;
+//					end of debuging reason
 					System.out.println("The option was "+randomNum);
 					switch(randomNum){
 						case 0:
