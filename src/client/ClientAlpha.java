@@ -15,6 +15,8 @@ import entities.User;
 
 
 
+
+
 public class ClientAlpha implements Runnable{
 	
 //	This is for sending and receiving the object using the sockets 
@@ -23,13 +25,20 @@ public class ClientAlpha implements Runnable{
 	protected int    clientPort   = 10033;
     protected Socket clientSocket = null;
 	
-	
-	
+    //Messages
+	private String message_1="Oder ich uns ich kind eia wort. Schatz kommst te bilder worden an servus um warmer. Sto weste sagte her unten blieb ich guter wuchs. Fruh sto orte hof nein noch. Immer wu davon blick zu komme ruhen mu. Sag nachmittag ich sauberlich hausdacher kuchenture mag dus. "+
+    "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln.";
+	private String message_2="Es betrubtes pa dammerung um plaudernd.";
 //	These are the parameter for each client for connecting 
 	private String server, username;
 	private int port;
 //	This is for stop the running of my client
 	protected boolean      isStopped    = false;
+//	Variables for experiments
+	private static long waitingTime=0;
+	private static int operationToPerform=-1;
+	private static long durationTime=0;
+	
 	
 	
 	public ClientAlpha(String server, int port, String username) {
@@ -39,6 +48,7 @@ public class ClientAlpha implements Runnable{
 		this.username = username;
 	}
 	
+	@Override
 	public void run(){
 //		Try to connect to the server
 		try {
@@ -90,9 +100,15 @@ public class ClientAlpha implements Runnable{
 			e.printStackTrace();
 		}
 		
+		//Initialize running time varibale 
 		
+		long endExecution = System.currentTimeMillis() + durationTime*1000;
 		while(! isStopped()){
-			randomNum=rand.nextInt(8);
+			if(operationToPerform==-1){
+				randomNum=rand.nextInt(8);
+			}else{
+				randomNum=operationToPerform;
+			}
 			//System.out.println("The option was "+randomNum);
 			try {
 //				object that will be use to handle the communication between client and server
@@ -160,7 +176,7 @@ public class ClientAlpha implements Runnable{
 //							looking for message sent by someone 
 							transitObject.protocolNum=randomNum;
 							transitObject.userName=this.username;
-							forServer.sender="user_z";
+							forServer.sender=PossibleUsers.getRandomUser().toString();
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
@@ -186,6 +202,12 @@ public class ClientAlpha implements Runnable{
 //							create a new message
 							transitObject.protocolNum=randomNum;
 							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username);
+//							select which message to send
+							if(rand.nextInt(2)==0){
+								forServer.message=message_1;
+							}else{
+								forServer.message=message_2;
+							}
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
@@ -212,7 +234,7 @@ public class ClientAlpha implements Runnable{
 						case 4:
 //							create a new queue
 							transitObject.protocolNum=randomNum;
-							queueForServer.name="newName";
+							queueForServer.name=PossibleQueues.getRandomQueue().toString();
 							transitObject.newQueue=queueForServer;
 							transitObject.counter=counter;
 							output.reset();
@@ -236,9 +258,16 @@ public class ClientAlpha implements Runnable{
 						case 5:
 //							create a new message for a specific receiver
 							transitObject.protocolNum=randomNum;
-							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,"user_z");
+							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,PossibleUsers.getRandomUser().toString());
+//							select which message to send
+							if(rand.nextInt(2)==0){
+								forServer.message=message_1;
+							}else{
+								forServer.message=message_2;
+							}
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
+							transitObject.newQueue.name=PossibleQueues.getRandomQueue().toString();
 							output.reset();
 							output.writeObject(transitObject);
 							output.flush();
@@ -283,10 +312,31 @@ public class ClientAlpha implements Runnable{
 							break;
 					
 					}
-					randomNum=rand.nextInt(8);
-					System.out.println("ACK option was "+randomNum);
+					if(operationToPerform==-1){
+						randomNum=rand.nextInt(8);
+						System.out.println("ACK option was "+randomNum);
+					}else{
+						System.out.println("ACK option was "+randomNum);
+					}
+//					Sleeping time for the next operation
+					long start = System.currentTimeMillis();
+					long end = start + waitingTime*1000; // 60 seconds * 1000 ms/sec
+					while (System.currentTimeMillis() < end)
+					{
+					    // run
+					}
+					if(System.currentTimeMillis()>endExecution){
+//						System.out.println("Cheking "+System.currentTimeMillis()+"stop at "+e);
+						randomNum=7;
+					}
 				}
-				
+
+//				try {
+//					Thread.sleep(waitingTime*1000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 //				output.writeObject(randomNum);
 //				messageServer=(String) input.readObject();
 				replayFromServer="I am done!!";
@@ -342,10 +392,34 @@ public class ClientAlpha implements Runnable{
 //		This switch is used to determine how to initialize the client
 //		based on the number of arguments 
 		switch(args.length) {
-			case 3:
+			case 6:
+				waitingTime=Integer.parseInt(args[5]);
+				operationToPerform=Integer.parseInt(args[4]);
+				serverAddress = args[3];
+				portNumber= Integer.parseInt(args[2]);
+				userName=args[1];
+				durationTime=Long.parseLong(args[0]);
+				break;
+			case 5:
+	
+				operationToPerform=Integer.parseInt(args[4]);
+				serverAddress = args[3];
+				portNumber= Integer.parseInt(args[2]);
+				userName=args[1];
+				durationTime=Long.parseLong(args[0]);
+				break;
+			case 4:
+
 				serverAddress = args[2];
 				portNumber= Integer.parseInt(args[1]);
 				userName=args[0];
+				durationTime=Long.parseLong(args[0]);
+				break;
+			case 3:
+
+				portNumber= Integer.parseInt(args[2]);
+				userName=args[1];
+				durationTime=Long.parseLong(args[0]);
 				break;
 			case 2:
 				try {
@@ -353,7 +427,7 @@ public class ClientAlpha implements Runnable{
 				}
 				catch(Exception e) {
 					System.out.println("Invalid port number.");
-					System.out.println("Usage is: > java Client [username] [portNumber] [serverAddress]");
+					System.out.println("Usage is: > java Client [dauration] [username] [portNumber] [serverAddress] [operation] [waiting time in seconds]");
 					return;
 				}
 				break;
@@ -363,7 +437,7 @@ public class ClientAlpha implements Runnable{
 			case 0:
 				break;
 			default:
-				System.out.println("Usage is: > java Client [username] [portNumber] {serverAddress]");
+				System.out.println("Usage is: > java Client [dauration] [username] [portNumber] [serverAddress] [operation] [waiting time in seconds]");
 			return;
 		}
 		ClientAlpha client = new ClientAlpha(serverAddress, portNumber, userName);

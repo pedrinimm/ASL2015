@@ -46,7 +46,7 @@ public class Protocol implements java.io.Serializable{
 		this.protocolNum = protocol;
 		this.newUser = user;
 		this.newMessage = null;
-		this.newQueue = null;
+		this.newQueue = new Queue();
 	}
 
 	

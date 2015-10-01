@@ -26,7 +26,8 @@ public class Middleware implements Runnable{
     	connectingServer=new DatabaseConnectorServer();
 		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
     }
-    public void run(){
+    @Override
+	public void run(){
         synchronized(this){
             this.runningThread = Thread.currentThread();
         }

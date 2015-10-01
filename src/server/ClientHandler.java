@@ -28,7 +28,8 @@ public class ClientHandler implements Runnable{
         this.serverText   = serverText;
         this.connection_1=con;
 	}
-	 public void run(){
+	 @Override
+	public void run(){
 		 int counter=0;
 		 try {
 //			 	create the object protocol to understand what the client wants
@@ -172,7 +173,7 @@ public class ClientHandler implements Runnable{
 	            			Message newMessage_2=new Message("username");
 	            			newMessage_2 = objectTransit.newMessage;
 //	            			initialize queue of the object transit ---is going nulll 
-	            			objectTransit.newQueue=new Queue("newQueue");
+//	            			objectTransit.newQueue=new Queue("newQueue");
 	            			
 //	            			Check if general queue Exists
 	            			String queueID_4= database.GetQueue.execute_query(connection_1, objectTransit.newQueue.name);
