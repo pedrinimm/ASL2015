@@ -8,16 +8,37 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.Random;
 
+
 import entities.Message;
 import entities.Protocol;
 import entities.Queue;
 import entities.User;
+import logger.LoggingSet;
+
+
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
+import java.util.Date;
+
 
 
 
 
 
 public class ClientAlpha implements Runnable{
+	
+	
+//	Logger
+//	private static final Logger log=LogManager.getRootLogger();
+	
+
+	public static LoggingSet lg=new LoggingSet(ClientAlpha.class.getName());
+	public static final Logger logger=LoggingSet.getLogger();
+	//--for measuring reasons 
+	public static LoggingSet l_measure=new LoggingSet(ClientAlpha.class.getName()+"-tracing-");
+	public static final Logger log=LoggingSet.getLogger();
+	//---end
 	
 //	This is for sending and receiving the object using the sockets 
 	private ObjectInputStream input;		
@@ -52,7 +73,9 @@ public class ClientAlpha implements Runnable{
 	public void run(){
 //		Try to connect to the server
 		try {
+			log.info("Connection_Requested\t"+System.currentTimeMillis());
 			clientSocket= new Socket(this.server,this.port);
+			log.info("Connection_Accepted\t"+System.currentTimeMillis());
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -79,6 +102,7 @@ public class ClientAlpha implements Runnable{
 			this.output = new ObjectOutputStream(clientSocket.getOutputStream());
 			transitObject.counter=counter;
 			output.reset();
+			log.info("Initialize_session\t"+System.currentTimeMillis());
 			output.writeObject(transitObject);
 			output.flush();
 			counter++;
@@ -93,14 +117,14 @@ public class ClientAlpha implements Runnable{
 				}
 			}
 			messageServer=transitObject.message;
-			
+			log.info("Session_Initialized\t"+System.currentTimeMillis());
 			System.out.println(messageServer);
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		//Initialize running time varibale 
+		//Initialize running time variable 
 		
 		long endExecution = System.currentTimeMillis() + durationTime*1000;
 		while(! isStopped()){
@@ -327,7 +351,14 @@ public class ClientAlpha implements Runnable{
 					}
 					if(System.currentTimeMillis()>endExecution){
 //						System.out.println("Cheking "+System.currentTimeMillis()+"stop at "+e);
+//						send last message
 						randomNum=7;
+						transitObject.counter=counter;
+						transitObject.protocolNum=randomNum;
+						output.reset();
+						output.writeObject(transitObject);
+						output.flush();
+						counter++;
 					}
 				}
 
@@ -410,9 +441,9 @@ public class ClientAlpha implements Runnable{
 				break;
 			case 4:
 
-				serverAddress = args[2];
-				portNumber= Integer.parseInt(args[1]);
-				userName=args[0];
+				serverAddress = args[3];
+				portNumber= Integer.parseInt(args[2]);
+				userName=args[1];
 				durationTime=Long.parseLong(args[0]);
 				break;
 			case 3:

@@ -11,7 +11,7 @@
 	<property name="db"  location="db"/>
 	<property name="jar"  location="jar"/>
 
-
+	
   	<target name="init">
     	<!-- Create the time stamp -->
     	<tstamp/>
@@ -25,6 +25,9 @@
     		<classpath>
     			<fileset dir="${lib}">
     				      	<include name="**/*.jar" />
+    			</fileset>
+    			<fileset dir="${src}">
+    			    		<include name="*.xml" />
     			</fileset>
     		</classpath>
     	</javac>

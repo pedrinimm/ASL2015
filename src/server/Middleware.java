@@ -7,6 +7,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Logger;
+
+import logger.LoggingSet;
+
+
 
 public class Middleware implements Runnable{
 
@@ -14,7 +19,16 @@ public class Middleware implements Runnable{
     protected ServerSocket serverSocket = null;
     protected boolean      isStopped    = false;
     protected Thread       runningThread= null;
-    protected ExecutorService threadPool = Executors.newFixedThreadPool(10);
+    protected ExecutorService threadPool;
+    
+//	Logger
+//	private static final Logger log=LogManager.getRootLogger();
+//	public static LoggingSet lg=new LoggingSet(Middleware.class.getName());
+//	public static final Logger logger=LoggingSet.getLogger();
+	//--for measuring reasons 
+	public static LoggingSet l_measure=new LoggingSet(Middleware.class.getName()+"-tracing-");
+	public static final Logger log=LoggingSet.getLogger();
+	//---end
     
 //    variables to get connection to the database
     DatabaseConnectorServer connectingServer;
@@ -25,9 +39,11 @@ public class Middleware implements Runnable{
     	this.serverPort = port;
     	connectingServer=new DatabaseConnectorServer();
 		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+		threadPool = Executors.newFixedThreadPool(1);
     }
     @Override
 	public void run(){
+    	log.info("System_Running\t"+System.currentTimeMillis());
         synchronized(this){
             this.runningThread = Thread.currentThread();
         }
