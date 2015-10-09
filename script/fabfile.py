@@ -30,28 +30,39 @@ def createApplications(experimentID):
 
 
 def initMiddleware():
-	
-	put("../dist/jar/Server-Messaging.jar","/home/ec2-user")
+	# fab -R dryad02 initMiddleware
+	put("../../Middleware","/home/mpedro")
+	run('mkdir /mnt/local/mpedro')
+	run('mv Middleware/ /mnt/local/mpedro')
 
 def startMiddleware(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort):
-
-	run('screen -S experiment')
-	run('screen -S experiment -X java -jar Server-Messaging.jar %s %s %s %s %s %s %s' % dbServer,dbName,dbUser,db,dbPassword,noOfConnections,listeningPort)
+	# fab -R dryad02 startMiddleware:dbServer=dryad08,dbName=messaging,dbUser=mpedro,dbPassword=squirrel,noOfConnections=100,listeningPort=1999
+	# run('screen -S experiment')
+	run('cd /mnt/local/mpedro/Middleware && ant Middleware')
+	run('mkdir /mnt/local/mpedro/running')
+	run('mv /mnt/local/mpedro/Middleware/dist/jar/Server-Messaging.jar /mnt/local/mpedro/running/')
+	run('screen java -jar /mnt/local/mpedro/running/Server-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
 
 def getMiddlewareLog(experimentID):
 	local("mkdir ./logs_exp_%S/middleware"% experimentID)
 	get(remote_path="./*.log", local_path="./logs_exp_%S/middleware"% experimentID)
 
 def initClients():
+	# fab -R dryad01 initClients
+	put("../../Middleware","/home/mpedro")
+	run('mkdir /mnt/local/mpedro')
+	run('mv Middleware/ /mnt/local/mpedro')
+	
 
-	put("../dist/jar/client-Messaging.jar","/home/ec2-user")
-
-def startClients(serverAddress,serverPort,noClients,operationType,duration):
+def startClients(duration,serverPort,serverAddress,operationType,workload,noClients,):
+	# fab -R dryad01 startClients:duration=30,serverPort=1999,serverAddress=dryad02,operationType=-1,workload=1,noClients=2
+	run('cd /mnt/local/mpedro/Middleware && ant Client')
+	run('mkdir /mnt/local/mpedro/running')
+	run('mv /mnt/local/mpedro/Middleware/dist/jar/client-Messaging.jar /mnt/local/mpedro/running/')
 	userName=""
-	run('screen -S experiment')
-	for i in range(1,noClients):
-		userName="Client_%i" % i
-		run('screen -S experiment -X java -jar client-Messaging.jar %s %s %s %s %s %s' % duration,userName,serverPort,serverAddress,operationType,duration)
+	for i in range(1,int(noClients)):
+		userName="Client_{0}".format(i)
+		run('screen java -jar  /mnt/local/mpedro/running/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
 
 def getClientLog(experimentID):
 	local("mkdir ./logs_exp_%S/clients"% experimentID)
