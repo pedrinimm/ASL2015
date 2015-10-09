@@ -74,7 +74,7 @@ public class GetMessageFrom {
 				// TODO Auto-generated method stub
 				// TODO Auto-generated method stub
 				connectingServer=new DatabaseConnectorServer();
-				connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+				connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100,900);
 				try{
 					connection_1=connectingServer.getDatabaseConnection();
 					//checking if the connection that is returning is not closed

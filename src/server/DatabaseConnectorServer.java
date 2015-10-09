@@ -22,12 +22,13 @@ public class DatabaseConnectorServer {
 	
 	//method for setting up the connection to the database
 	public void setupDatabaseConnectionPool(String username,
-            String password, String server, String database, int maxConnections) {
+            String password, String server, String database, int maxConnections, int portNumber) {
         		connectionPool.setUser(username);
         		connectionPool.setPassword(password);
         		connectionPool.setServerName(server);
         		connectionPool.setDatabaseName(database);
         		connectionPool.setMaxConnections(maxConnections);
+        		connectionPool.setPortNumber(portNumber);
     }
 	
 	//method for requesting a new connection to the database
@@ -61,7 +62,7 @@ public class DatabaseConnectorServer {
 		Connection connection_1 = null;
 		
 		connectingServer=new DatabaseConnectorServer();
-		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100,9000);
 	
 		
 		try{

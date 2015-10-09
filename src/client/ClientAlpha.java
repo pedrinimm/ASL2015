@@ -16,10 +16,9 @@ import entities.User;
 import logger.LoggingSet;
 
 
-import java.util.logging.Level;
-import java.util.logging.LogManager;
+
 import java.util.logging.Logger;
-import java.util.Date;
+
 
 
 
@@ -33,8 +32,8 @@ public class ClientAlpha implements Runnable{
 //	private static final Logger log=LogManager.getRootLogger();
 	
 
-	public static LoggingSet lg=new LoggingSet(ClientAlpha.class.getName());
-	public static final Logger logger=LoggingSet.getLogger();
+//	public static LoggingSet lg=new LoggingSet(ClientAlpha.class.getName());
+//	public static final Logger logger=LoggingSet.getLogger();
 	//--for measuring reasons 
 	public static LoggingSet l_measure=new LoggingSet(ClientAlpha.class.getName()+"-tracing-");
 	public static final Logger log=LoggingSet.getLogger();
@@ -125,11 +124,10 @@ public class ClientAlpha implements Runnable{
 		}
 		
 		//Initialize running time variable 
-		
 		long endExecution = System.currentTimeMillis() + durationTime*1000;
 		while(! isStopped()){
 			if(operationToPerform==-1){
-				randomNum=rand.nextInt(8);
+				randomNum=rand.nextInt(7);
 			}else{
 				randomNum=operationToPerform;
 			}
@@ -155,6 +153,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Read_Message\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -169,7 +168,7 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							forServer= transitObject.newMessage;
-							
+							log.info("Respond_Read_Message\t"+System.currentTimeMillis());
 							System.out.println(forServer.messageID);
 							break;
 						case 1:
@@ -178,6 +177,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.userName=this.username;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Read_Message_for_me\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -192,7 +192,7 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							forServer= transitObject.newMessage;
-							
+							log.info("Respond_Read_Message_for_me\t"+System.currentTimeMillis());
 							
 							System.out.println(forServer.messageID);
 							break;
@@ -204,6 +204,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Read_Message_sent_by\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -218,7 +219,8 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							forServer= transitObject.newMessage;
-					
+							
+							log.info("Respond_Read_Message_sent_by\t"+System.currentTimeMillis());
 							
 							System.out.println(forServer.messageID);
 							break;
@@ -235,6 +237,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Send_New_Message\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -250,7 +253,7 @@ public class ClientAlpha implements Runnable{
 							}
 							replayFromServer=transitObject.message;
 					
-							
+							log.info("Respond_Send_New_Message\t"+System.currentTimeMillis());
 							
 							
 							System.out.println(replayFromServer);
@@ -262,6 +265,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.newQueue=queueForServer;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Create_Queue\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -276,6 +280,8 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							replayFromServer=transitObject.message;
+							
+							log.info("Respond_Create_Queue\t"+System.currentTimeMillis());
 							
 							System.out.println(replayFromServer);
 							break;
@@ -293,6 +299,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.counter=counter;
 							transitObject.newQueue.name=PossibleQueues.getRandomQueue().toString();
 							output.reset();
+							log.info("Request_Create_Messge_to\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -307,7 +314,7 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							replayFromServer=transitObject.message;
-							
+							log.info("Respond_Create_Messge_to\t"+System.currentTimeMillis());
 							System.out.println(replayFromServer);
 							break;
 						case 6:
@@ -317,6 +324,7 @@ public class ClientAlpha implements Runnable{
 							transitObject.newQueue=queueForServer;
 							transitObject.counter=counter;
 							output.reset();
+							log.info("Request_Delete_Queue\t"+System.currentTimeMillis());
 							output.writeObject(transitObject);
 							output.flush();
 							counter++;
@@ -331,13 +339,13 @@ public class ClientAlpha implements Runnable{
 								}
 							}
 							replayFromServer=transitObject.message;
-							
+							log.info("Request_Delete_Queue\t"+System.currentTimeMillis());
 							System.out.println(replayFromServer);
 							break;
 					
 					}
 					if(operationToPerform==-1){
-						randomNum=rand.nextInt(8);
+						randomNum=rand.nextInt(7);
 						System.out.println("ACK option was "+randomNum);
 					}else{
 						System.out.println("ACK option was "+randomNum);

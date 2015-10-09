@@ -58,7 +58,7 @@ public class DeleteMessage {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		connectingServer=new DatabaseConnectorServer();
-		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100,9000);
 		try{
 			connection_1=connectingServer.getDatabaseConnection();
 			//checking if the connection that is returning is not closed

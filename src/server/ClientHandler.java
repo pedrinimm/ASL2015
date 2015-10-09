@@ -5,11 +5,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
+import java.util.logging.Logger;
 
 import entities.Message;
 import entities.Protocol;
 import entities.Queue;
 import entities.User;
+import logger.LoggingSet;
 
 public class ClientHandler implements Runnable{
 
@@ -23,6 +25,12 @@ public class ClientHandler implements Runnable{
     Connection connection_1 = null;
     DatabaseConnectorServer connectingServer;
     
+  //--for measuring reasons 
+  	public static LoggingSet l_measure=new LoggingSet(ClientHandler.class.getName()+"-tracing-");
+  	public static final Logger log=LoggingSet.getLogger();
+  	//---end
+      
+    
 	public ClientHandler(Socket clientSocket, String serverText, Connection con){
 		this.clientSocket = clientSocket;
         this.serverText   = serverText;
@@ -30,6 +38,7 @@ public class ClientHandler implements Runnable{
 	}
 	 @Override
 	public void run(){
+		 log.info("System_Running\t"+System.currentTimeMillis());
 		 int counter=0;
 		 try {
 //			 	create the object protocol to understand what the client wants
@@ -48,6 +57,7 @@ public class ClientHandler implements Runnable{
 	            	System.out.println("Client option was "+clientOption);
 	            	switch(clientOption){
 	            		case 0:
+	            			log.info("Request_Read_Message\t"+System.currentTimeMillis());
 //	            			read the message
 	            			Message newMessage_y = database.GetMessage.execute_query(connection_1,objectTransit.userName);
 	           	         
@@ -62,8 +72,10 @@ public class ClientHandler implements Runnable{
 	            			output.reset();
 	            			output.writeObject(objectTransit);
 	            			output.flush();
+	            			log.info("Respond_Read_Message\t"+System.currentTimeMillis());
 	            			break;
 	            		case 1:
+	            			log.info("Request_Read_Message_for_me\t"+System.currentTimeMillis());
 //	            			reading special message for me
 	            			Message newMessage_1 = database.GetOwnMessage.execute_query(connection_1, objectTransit.userName);
 //	            			delete the message after reading
@@ -76,9 +88,10 @@ public class ClientHandler implements Runnable{
 	            			output.reset();
 	            			output.writeObject(objectTransit);
 	            			output.flush();
-	            			
+	            			log.info("Respond_Read_Message\t"+System.currentTimeMillis());
 	            			break;
 	            		case 2:
+	            			log.info("Request_Read_Message_sent_by\t"+System.currentTimeMillis());
 //	            			looking for a message from
 	            			
 	            			Message newMessage_x = database.GetMessageFrom.execute_query(connection_1,objectTransit.userName,
@@ -96,8 +109,10 @@ public class ClientHandler implements Runnable{
 	            			output.reset();
 	            			output.writeObject(objectTransit);
 	            			output.flush();
+	            			log.info("Respond_Read_Message_sent_by\t"+System.currentTimeMillis());
 	            			break;
 	            		case 3:
+	            			log.info("Request_Send_New_Message\t"+System.currentTimeMillis());
 //	            			create a message
 
 //	            			Steps for creating a new message
@@ -134,8 +149,10 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject(objectTransit);
 	            				output.flush();
 	            			}
+	            			log.info("Respond_Send_New_Message\t"+System.currentTimeMillis());
 	            			break;
 	            		case 4:
+	            			log.info("Request_Create_Queue\t"+System.currentTimeMillis());
 //	            			create a new queue
 	            			
 //	            			Check if general queue Exists
@@ -163,9 +180,10 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject(objectTransit);
 	            				output.flush();
 	            			}
-	            			
+	            			log.info("Respond_Create_Queue\t"+System.currentTimeMillis());
 	            			break;
 	            		case 5:
+	            			log.info("Request_Create_Messge_to\t"+System.currentTimeMillis());
 //	            			create a new message for a specific receiver
 	            			
 //	            			Steps for creating a new message
@@ -204,8 +222,10 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject(objectTransit);
 	            				output.flush();
 	            			}
+	            			log.info("Respond_Create_Messge_to\t"+System.currentTimeMillis());
 	            			break;
 	            		case 6:
+	            			log.info("Request_Delete_Queue\t"+System.currentTimeMillis());
 //	            			delete queue
 //	            			Check if general queue Exists
 	            			String queueID_2= database.GetQueue.execute_query(connection_1,objectTransit.newQueue.name);
@@ -233,8 +253,10 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject(objectTransit);
 	            				output.flush();
 	            			}
+	            			log.info("Request_Delete_Queue\t"+System.currentTimeMillis());
 	            			break;
 	            		case 99:
+	            			log.info("Initialize_session\t"+System.currentTimeMillis());
 //	            			This means this is the first message from the client so we have to check
 //	            			if the client already exists or if it's a new one
 	            			
@@ -262,6 +284,7 @@ public class ClientHandler implements Runnable{
 	            				output.writeObject(objectTransit);
 	            				output.flush();
 	            			}
+	            			log.info("Session_Initialized\t"+System.currentTimeMillis());
 	            			break;
 	            	}
 	            	while(true){

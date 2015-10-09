@@ -34,16 +34,28 @@ public class Middleware implements Runnable{
     DatabaseConnectorServer connectingServer;
 	Connection connection_1 = null;
 	
+//	for timing control
+//	private static long durationTime=30;
+	
     
     public Middleware(int port){
     	this.serverPort = port;
     	connectingServer=new DatabaseConnectorServer();
-		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100);
+		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100, 9000);
 		threadPool = Executors.newFixedThreadPool(1);
+    }
+    public Middleware(String dbServer,String dbName,String dbUser,String dbPassword,int noConnections,int port){
+    	this.serverPort = port;
+//    	this.durationTime=timing;
+    	connectingServer=new DatabaseConnectorServer();
+		connectingServer.setupDatabaseConnectionPool(dbUser, dbPassword,dbServer, dbName, noConnections, port);
+		threadPool = Executors.newFixedThreadPool(noConnections);
     }
     @Override
 	public void run(){
-    	log.info("System_Running\t"+System.currentTimeMillis());
+    	//Initialize running time variable 
+//    	long endExecution = System.currentTimeMillis() + durationTime*1000;
+//    	log.info("System_Running\t"+System.currentTimeMillis());
         synchronized(this){
             this.runningThread = Thread.currentThread();
         }
@@ -63,6 +75,10 @@ public class Middleware implements Runnable{
             }
             this.threadPool.execute(new ClientHandler(clientSocket,"Thread Pooled Server",connection_1));
 //            System.out.println("Number of clients: ");
+//            if(System.currentTimeMillis()>endExecution){
+//            	System.out.println("Time to shutdown");
+//            	this.stop();
+//            }
             
         }
         this.threadPool.shutdown();
@@ -119,8 +135,38 @@ public class Middleware implements Runnable{
     
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Middleware server = new Middleware(9000);
-		new Thread(server).start();
+		String dbServer="";
+		String dbUser="";
+		String dbPassword="";
+		String dbName="";
+		int noConnections=0;
+		int port=0;
+//		long time=5;
+		
+		Middleware server;
+		
+//		This switch is used to determine how to initialize the client
+//		based on the number of arguments 
+		switch(args.length) {
+			case 6:
+				dbServer=args[0];
+				dbName=args[1];
+				dbUser=args[2];
+				dbPassword=args[3];
+				noConnections=Integer.parseInt(args[4]);
+				port=Integer.parseInt(args[5]);
+//				time=Long.parseLong(args[6]);
+				server = new Middleware(dbServer,dbName,dbUser,dbPassword,noConnections,port);
+				new Thread(server).start();
+				break;
+			case 1:
+				port=Integer.parseInt(args[0]);
+				server = new Middleware(port);
+				new Thread(server).start();
+				break;
+		}
+		
+		
 
 //		try {
 //		    Thread.sleep(20 * 1000);
