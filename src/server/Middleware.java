@@ -27,7 +27,7 @@ public class Middleware implements Runnable{
 //	public static final Logger logger=LoggingSet.getLogger();
 	//--for measuring reasons 
 	public static LoggingSet l_measure=new LoggingSet(Middleware.class.getName()+"-tracing-");
-	public static final Logger log=LoggingSet.getLogger();
+	public static final Logger log=l_measure.getLogger();
 	//---end
     
 //    variables to get connection to the database
@@ -45,7 +45,7 @@ public class Middleware implements Runnable{
 		threadPool = Executors.newFixedThreadPool(1);
     }
     public Middleware(String dbServer,String dbName,String dbUser,String dbPassword,int noConnections,int port){
-    	this.serverPort = port;
+    	this.serverPort = port+1;
 //    	this.durationTime=timing;
     	connectingServer=new DatabaseConnectorServer();
 		connectingServer.setupDatabaseConnectionPool(dbUser, dbPassword,dbServer, dbName, noConnections, port);
@@ -61,6 +61,7 @@ public class Middleware implements Runnable{
         }
         openDatabaseConnection();
         openServerSocket();
+        int counter=0;
         while(! isStopped()){
             Socket clientSocket = null;
             try {
@@ -73,7 +74,7 @@ public class Middleware implements Runnable{
                 throw new RuntimeException(
                     "Error accepting client connection", e);
             }
-            this.threadPool.execute(new ClientHandler(clientSocket,"Thread Pooled Server",connection_1));
+            this.threadPool.execute(new ClientHandler(clientSocket,"Thread Pooled Server",connection_1,counter++));
 //            System.out.println("Number of clients: ");
 //            if(System.currentTimeMillis()>endExecution){
 //            	System.out.println("Time to shutdown");

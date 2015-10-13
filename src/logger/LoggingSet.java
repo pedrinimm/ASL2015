@@ -42,7 +42,7 @@ public class LoggingSet {
 		}
 		
 	}
-	static public Logger getLogger(){
+	public Logger getLogger(){
 		return logger;
 	}
 }

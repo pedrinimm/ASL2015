@@ -7,6 +7,7 @@
 
 
 # Import Fabric's API module
+import time
 from fabric.api import *
 
 
@@ -18,6 +19,7 @@ env.roledefs= {
 	'client':['ec2-user@52.17.102.181'],
 	'dryad01':['mpedro@dryad01'],
 	'dryad08':['mpedro@dryad08'],
+	'local':['pedrini@localhost'],
 	'dryad02':['mpedro@dryad02']
 }
 
@@ -54,7 +56,7 @@ def initClients():
 	run('mv Middleware/ /mnt/local/mpedro')
 	
 
-def startClients(duration,serverPort,serverAddress,operationType,workload,noClients,):
+def startClients(duration,serverPort,serverAddress,operationType,workload,noClients):
 	# fab -R dryad01 startClients:duration=30,serverPort=1999,serverAddress=dryad02,operationType=-1,workload=1,noClients=2
 	run('cd /mnt/local/mpedro/Middleware && ant Client')
 	run('mkdir /mnt/local/mpedro/running')
@@ -68,15 +70,6 @@ def getClientLog(experimentID):
 	local("mkdir ./logs_exp_%S/clients"% experimentID)
 	get(remote_path="./*.log", local_path="./logs_exp_%S/clients"% experimentID)
 
-def main():
-	#compile application and jar creation
-	createApplications()
-
-	#init the middleware server
-	initMiddleware()
-
-	#init the clients
-	# initClients(clientAddress,userName,pemPath)
 
 def installPostgresql():
 	local('curl -O ftp://ftp.postgresql.org/pub/source/v9.4.4/postgresql-9.4.4.tar.bz2')
@@ -106,6 +99,27 @@ def installPostgresql():
 	run('/mnt/local/mpedro/bin/bin/initdb -D /mnt/local/mpedro/bin/data/ -E UTF8 -A md5 -W')
 	# run('screen -S runDB')
 	run('screen /mnt/local/mpedro/bin/bin/postgres -D /mnt/local/mpedro/bin/data -h * -p 1999 -i -k /mnt/local/mpedro -N 100')
-	put("messaging","/mnt/local/mpedro/")
+	put("messaging.tar","/mnt/local/mpedro/")
 	run('/mnt/local/mpedro/bin/bin/createdb -p 1999 -h localhost -e messaging')
+	run('/mnt/local/mpedro/bin/bin/pg_restore -F tar -d messaging /mnt/local/mpedro/messaging.tar')
+
+
+def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,duration,serverPort,serverAddress,operationType,workload,noClients):
+	# fab -R local fullRunLocal:experimentID=alpha,dbServer=localhost,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=100,listeningPort=5432,duration=30,serverPort=5433,serverAddress=localhost,operationType=-1,workload=1,noClients=2
+	#create log folder 
+	local("mkdir logs_exp_{0}".format(experimentID))
+	local("cd .. && ant clean")
+	local("cd .. && ant Middleware")
+	local("cd .. && ant Client")
+	#run server
+	local('screen java -jar ../dist/jar/Server-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
+	#run clients
+	userName=""
+	for i in range(int(noClients)):
+		# print(i)
+		userName="Client_{0}".format(i)
+		local('screen -dmS {1} java -jar  ../dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
+	time.sleep(int(duration)+10)
+	local('mv *.log logs_exp_{0}/'.format(experimentID))
+	local('killall java')
 
