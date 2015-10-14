@@ -9,8 +9,14 @@
 # Import Fabric's API module
 import time
 from fabric.api import *
-
-
+import sys
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+from os import listdir
+from os.path import isfile, join
+import csv 
+import codecs
 
 env.key_filename='./asl15.pem'
 
@@ -122,4 +128,145 @@ def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,
 	time.sleep(int(duration)+10)
 	local('mv *.log logs_exp_{0}/'.format(experimentID))
 	local('killall java')
+	# local('rm logs_exp_{0}/.DS_Store'.format(experimentID))
 
+def parsing(pathOfLogs):
+	# fab -R local parsing:pathOfLogs=/Users/pedrini/Documents/workspace/Middleware/script/logs_exp_alpha/
+	handler="ClientHandler"
+	# this is for store the results of the clients
+	clients=[]
+	# this is for store the result from the client handlers
+	middleware=[]
+	# this is to store the timing for the database
+	database=[]
+	for f in listdir(pathOfLogs):
+		with open(pathOfLogs+f,'rU') as fo:
+			# this if check wheather is a log from a handler or a client
+			if f.find(handler)!=-1:
+				print("Log from server")
+				# individual handler operations
+				cHandler=[]
+				# individual database time
+				cDatabase=[]
+				spamreader = csv.reader(fo, delimiter='\t',)
+				time=""
+				time2=""
+				# this is for line reading control
+				controller=1
+				controller2=1
+				operation=""
+				operation2=""
+				for row in spamreader:
+					
+					# first we check if the line in the file has enough parameters
+					if len(row)>2:
+						
+						# this if check if the line I am reading is from logging the db or regular 
+						# print(controller)
+						# print(row)
+						if row[1] == "db":	
+							# print(row)
+							if controller == 1:
+
+								operation=row[3]
+								time=row[4]
+								controller=0
+								# print(operation,time,controller)
+							else:
+								# print("operation is {0} and row[3] is {1}".format(operation,row[3]))
+								if operation == row[3]:
+									# print("True")
+									cDatabase.append([row[2],row[3],time,row[4],int(row[4])-int(time)])
+									controller=1
+								# print(operation,time,controller)
+						else:
+							# print(row)
+							if controller2 == 1:
+								operation2=row[2]
+								time2=row[3]
+								controller2=0
+								# print(operation2,time2,controller2)
+							else:
+								# print("operation is {0} and row[2] is {1}".format(operation,row[2]))
+								if operation2 == row[2]:
+									cHandler.append([row[1],row[2],time2,row[3],int(row[3])-int(time2)])
+									controller2=1
+								# print(operation2,time2,controller2)
+				print(f)
+				print("request")
+				print(len(cHandler))
+				print("database")
+				print(len(cDatabase))
+				middleware.append(cHandler)
+				database.append(cDatabase)
+				# del cHandler[:]
+				# del cDatabase[:]
+				# for line in fo:
+				
+			else:
+				print("Log from client or middleware")
+				client=[]
+				spamreader = csv.reader(fo, delimiter='\t',)
+				# spamreader = csv.reader((line.replace('\0','') for line in fo), delimiter="\t")
+				time=""
+				# # this is for line reading control
+				controller=1
+				operation=""
+				for row in spamreader:
+					# print(row)
+					# first we check if the line in the file has enough parameters
+					if len(row)>3:
+						# print(row)
+						if controller == 1:
+							# print("operation is {0} and row[2] is {1}".format(operation,row[2]))
+							operation=row[2]
+							time=row[3]
+							controller=0
+							# print(operation2,time2,controller2)
+						else:
+							# print("operation is {0} and row[2] is {1}".format(operation,row[2]))
+							if operation == row[2]:
+								# print("HERE")
+								client.append([row[1],row[2],time,row[3],int(row[3])-int(time)])
+								controller=1
+				print(len(client))
+				clients.append(client)
+				# del client[:]
+	print("Done parsing")
+	plt.figure(1)
+	plt.hold(True)
+	plt.suptitle('Clients')
+	plt.ylabel('Response Time (ms)', fontsize=14)
+	plt.xlabel('# of Request', fontsize=14)
+	plt.ylim((0,600))
+	for item in clients:
+		x=[]
+		y=[]
+		for measure in item:
+			x.append(measure[4])
+			y.append(measure[1])
+		plt.plot(x)
+
+	plt.figure(2)
+	plt.hold(True)
+	plt.suptitle('Middleware')
+	plt.ylabel('Response Time (ms)', fontsize=14)
+	plt.xlabel('# of Request', fontsize=14)
+	plt.ylim((0,600))
+	for item in middleware:
+		x=[]
+		y=[]
+
+		for measure in item:
+			x.append(measure[4])
+			y.append(measure[1])
+		plt.plot(x)
+	
+	plt.show()
+	
+	
+	
+
+
+
+			
