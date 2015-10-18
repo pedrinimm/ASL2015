@@ -152,6 +152,8 @@ def parsing(pathOfLogs):
 				time=""
 				time2=""
 				# this is for line reading control
+				name=""
+				name2=""
 				controller=1
 				controller2=1
 				operation=""
@@ -166,29 +168,35 @@ def parsing(pathOfLogs):
 						# print(row)
 						if row[1] == "db":	
 							# print(row)
-							if controller == 1:
-
+							if controller == 1 and name <>  row[0]:
+								# print(" name is {2} operation is {0} and row[3] is {1}".format(operation,row[3],row[0]))
+								name=row[0]
 								operation=row[3]
 								time=row[4]
 								controller=0
 								# print(operation,time,controller)
 							else:
-								# print("operation is {0} and row[3] is {1}".format(operation,row[3]))
-								if operation == row[3]:
+								# print(" name is {2} operation is {0} and row[3] is {1}".format(operation,row[3],row[0]))
+								if operation == row[3] and name <>  row[0]: 
 									# print("True")
+									name=row[0]
 									cDatabase.append([row[2],row[3],time,row[4],int(row[4])-int(time)])
 									controller=1
 								# print(operation,time,controller)
 						else:
 							# print(row)
-							if controller2 == 1:
+							if controller2 == 1 and name <>  row[0]:
+								# print(" name is {2} operation is {0} and row[3] is {1}".format(operation2,row[2],row[0]))
+								name2=row[0]
 								operation2=row[2]
 								time2=row[3]
 								controller2=0
 								# print(operation2,time2,controller2)
 							else:
-								# print("operation is {0} and row[2] is {1}".format(operation,row[2]))
-								if operation2 == row[2]:
+								# print(" name is {2} operation is {0} and row[3] is {1}".format(operation2,row[2],row[0]))
+								if operation2 == row[2] and name2<>row[0]:
+									# print("True")
+									name2=row[0]
 									cHandler.append([row[1],row[2],time2,row[3],int(row[3])-int(time2)])
 									controller2=1
 								# print(operation2,time2,controller2)
@@ -238,7 +246,7 @@ def parsing(pathOfLogs):
 	plt.suptitle('Clients')
 	plt.ylabel('Response Time (ms)', fontsize=14)
 	plt.xlabel('# of Request', fontsize=14)
-	plt.ylim((0,600))
+	# plt.ylim((0,600))
 	for item in clients:
 		x=[]
 		y=[]
@@ -252,7 +260,7 @@ def parsing(pathOfLogs):
 	plt.suptitle('Middleware')
 	plt.ylabel('Response Time (ms)', fontsize=14)
 	plt.xlabel('# of Request', fontsize=14)
-	plt.ylim((0,600))
+	# plt.ylim((0,600))
 	for item in middleware:
 		x=[]
 		y=[]
