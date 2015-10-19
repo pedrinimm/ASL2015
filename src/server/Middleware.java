@@ -7,9 +7,21 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
+import org.apache.logging.log4j.Logger;
+//import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.FileAppender;
+////import java.util.logging.Logger;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.SimpleLayout;
+import org.apache.logging.log4j.ThreadContext;
+
+import client.ClientAlpha;
 import logger.LoggingSet;
+
+
+//import logger.LoggingSet;
 
 
 
@@ -26,8 +38,9 @@ public class Middleware implements Runnable{
 //	public static LoggingSet lg=new LoggingSet(Middleware.class.getName());
 //	public static final Logger logger=LoggingSet.getLogger();
 	//--for measuring reasons 
-	public static LoggingSet l_measure=new LoggingSet(Middleware.class.getName()+"-tracing-");
-	public static final Logger log=l_measure.getLogger();
+//	public static LoggingSet l_measure=new LoggingSet(Middleware.class.getName()+"-tracing-");
+//	public static final Logger log=l_measure.getLogger(Middleware.class.getName()+"-tracing-");
+//	public static final Logger log=LoggingSet.getLogger();
 	//---end
     
 //    variables to get connection to the database
@@ -53,9 +66,25 @@ public class Middleware implements Runnable{
     }
     @Override
 	public void run(){
+//    	FileAppender myFileAppender;
+//		 try
+//		 {
+//		     myFileAppender = new FileAppender(new SimpleLayout(), Middleware.class.getName()+"-tracing-" + ".log", false);
+//		     BasicConfigurator.resetConfiguration();
+//		     BasicConfigurator.configure(myFileAppender);
+//		 } catch (IOException e1) {
+//		 // TODO Auto-generated catch block
+//		     e1.printStackTrace();
+//		 }
+//    	BasicConfigurator.configure();
+//    	String log4jConfPath = "src/log4j.properties";
+//    	PropertyConfigurator.configure(log4jConfPath);
     	//Initialize running time variable 
 //    	long endExecution = System.currentTimeMillis() + durationTime*1000;
 //    	log.info("System_Running\t"+System.currentTimeMillis());
+    	ThreadContext.put("logFilename","main");
+    	LoggingSet.setup(Middleware.class.getName()+"-tracing-");
+    	Logger log=LoggingSet.getLogger();
         synchronized(this){
             this.runningThread = Thread.currentThread();
         }
@@ -163,6 +192,10 @@ public class Middleware implements Runnable{
 			case 1:
 				port=Integer.parseInt(args[0]);
 				server = new Middleware(port);
+				new Thread(server).start();
+				break;
+			default:
+				server = new Middleware("localhost","messaging","postgres","squirrel",100,5432);
 				new Thread(server).start();
 				break;
 		}

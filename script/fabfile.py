@@ -118,13 +118,13 @@ def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,
 	local("cd .. && ant Middleware")
 	local("cd .. && ant Client")
 	#run server
-	local('screen java -jar ../dist/jar/Server-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
+	local('screen java -Dlog4j.configurationFile=../src/log4j2.xml -jar ../dist/jar/Server-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
 	#run clients
 	userName=""
 	for i in range(int(noClients)):
 		# print(i)
 		userName="Client_{0}".format(i)
-		local('screen -dmS {1} java -jar  ../dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
+		local('screen -dmS {1} java -Dlog4j.configurationFile=../src/log4j2.xml -jar  ../dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
 	time.sleep(int(duration)+10)
 	local('mv *.log logs_exp_{0}/'.format(experimentID))
 	local('killall java')
@@ -270,6 +270,20 @@ def parsing(pathOfLogs):
 			y.append(measure[1])
 		plt.plot(x)
 	
+	plt.figure(3)
+	plt.hold(True)
+	plt.suptitle('Database')
+	plt.ylabel('Response Time (ms)', fontsize=14)
+	plt.xlabel('# of Request', fontsize=14)
+	# plt.ylim((0,600))
+	for item in database:
+		x=[]
+		y=[]
+
+		for measure in item:
+			x.append(measure[4])
+			y.append(measure[1])
+		plt.plot(x)
 	plt.show()
 	
 	

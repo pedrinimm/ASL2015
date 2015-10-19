@@ -5,13 +5,25 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.sql.Connection;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 import entities.Message;
 import entities.Protocol;
 import entities.Queue;
 import entities.User;
 import logger.LoggingSet;
+
+import org.apache.logging.log4j.Logger;
+//
+//import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.FileAppender;
+////import logger.LoggingSet;
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.SimpleLayout;
+//import org.apache.logging.log4j.LevelLogger;
+import org.apache.logging.log4j.ThreadContext;
+
 
 public class ClientHandler implements Runnable{
 
@@ -36,11 +48,28 @@ public class ClientHandler implements Runnable{
 	}
 	 @Override
 	public void run(){
+//		 BasicConfigurator.configure();
+//		String log4jConfPath = "src/log4j.properties";
+//	    PropertyConfigurator.configure(log4jConfPath);
 		  //--for measuring reasons 
-		 LoggingSet l_measure=new LoggingSet(ClientHandler.class.getName()+"-tracing-"+this.idL+"-");
+//		 LoggingSet l_measure=new LoggingSet(ClientHandler.class.getName()+"-tracing-"+this.idL+"-");
 		
-		 Logger log=l_measure.getLogger();
-		 
+//		 Logger log=l_measure.getLogger();
+//		 Logger log=Logger.getLogger(ClientHandler.class.getName()+"-tracing-"+this.idL+"-");
+//		 FileAppender myFileAppender;
+//		 try
+//		 {
+//		     myFileAppender = new FileAppender(new SimpleLayout(), ClientHandler.class.getName()+"-tracing-"+this.idL+"-" + ".log", false);
+////		     BasicConfigurator.resetConfiguration();
+//		     BasicConfigurator.configure(myFileAppender);
+//		 } catch (IOException e1) {
+//		 // TODO Auto-generated catch block
+//		     e1.printStackTrace();
+//		 }
+//		 log.setUseParentHandlers(false);
+		 ThreadContext.put("logFilename",   ClientHandler.class.getName()+"-tracing-"+this.idL+"-");
+//		 LoggingSet.setup(Middleware.class.getName()+"-tracing-");
+		 Logger log=LoggingSet.getLogger();
 		 
 		  	//---end
 		 log.info("System_Running\t"+System.currentTimeMillis());
@@ -274,7 +303,7 @@ public class ClientHandler implements Runnable{
 //	            			if the client already exists or if it's a new one
 	            			
 //	            			Step 1 check user in database
-	            			log.info("Initialize_session\t"+"db\t"+clientOption+"\t"+objectTransit.counter+"t"+System.currentTimeMillis());
+	            			log.info("Initialize_session\t"+"db\t"+clientOption+"\t"+objectTransit.counter+"\t"+System.currentTimeMillis());
 	            			String userID = database.GetUser.execute_query(connection_1, objectTransit.newUser.name);
 	            			if(!userID.equals("")){
 	            				log.info("Session_Initialized\t"+"db\t"+clientOption+"\t"+objectTransit.counter+"\t"+System.currentTimeMillis());

@@ -10,6 +10,7 @@
 	<property name="lib"  location="lib"/>
 	<property name="db"  location="db"/>
 	<property name="jar"  location="jar"/>
+	<property name="log4j"  location="log4j"/>
 
 	
   	<target name="init">
@@ -26,7 +27,7 @@
     			<fileset dir="${lib}">
     				      	<include name="**/*.jar" />
     			</fileset>
-    			<fileset dir="${src}">
+    			<fileset dir="./">
     			    		<include name="*.xml" />
     			</fileset>
     		</classpath>

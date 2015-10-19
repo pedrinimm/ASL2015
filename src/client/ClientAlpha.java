@@ -8,18 +8,26 @@ import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.util.Random;
 
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import entities.Message;
 import entities.Protocol;
 import entities.Queue;
 import entities.User;
 import logger.LoggingSet;
+//import logger.LoggingSet;
+import server.ClientHandler;
 
-
-
-import java.util.logging.Logger;
-
-
+//import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.FileAppender;
+//
+////import java.util.logging.Logger;
+//
+//import org.apache.log4j.Logger;
+//import org.apache.log4j.PropertyConfigurator;
+//import org.apache.log4j.SimpleLayout;;
+//import org.apache.logging.log4j.LogManager;
 
 
 
@@ -66,9 +74,27 @@ public class ClientAlpha implements Runnable{
 	
 	@Override
 	public void run(){
+//		String log4jConfPath = "src/log4j.properties";
+//    	PropertyConfigurator.configure(log4jConfPath);
 		//--for measuring reasons 
-		LoggingSet l_measure=new LoggingSet(ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
-		Logger log=l_measure.getLogger();
+//		LoggingSet l_measure=new LoggingSet(ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
+//		Logger log=Logger.getLogger(ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
+////		Logger log=Logger.getLogger(ClientHandler.class.getName()+"-tracing-"+this.idL+"-");
+//		 FileAppender myFileAppender;
+//		 try
+//		 {
+//		     myFileAppender = new FileAppender(new SimpleLayout(), ClientAlpha.class.getName()+"-tracing-"+this.username+"-"+ ".log", false);
+//		     BasicConfigurator.resetConfiguration();
+//		     BasicConfigurator.configure(myFileAppender);
+//		 } catch (IOException e1) {
+//		 // TODO Auto-generated catch block
+//		     e1.printStackTrace();
+//		 }
+//		BasicConfigurator.configure();
+//		final Logger log = LogManager.getLogger(ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
+		ThreadContext.put("logFilename",  ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
+		LoggingSet.setup(ClientAlpha.class.getName()+"-tracing-"+this.username+"-");
+		Logger log=LoggingSet.getLogger();
 		//---end
 		
 //		Try to connect to the server
@@ -424,7 +450,7 @@ public class ClientAlpha implements Runnable{
     }
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		int portNumber = 9000;
+		int portNumber = 5433;
 		String serverAddress = "localhost";
 		String userName = "user_cool";
 
