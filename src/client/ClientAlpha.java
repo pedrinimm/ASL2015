@@ -50,19 +50,27 @@ public class ClientAlpha implements Runnable{
     protected Socket clientSocket = null;
 	
     //Messages
-	private String message_1="Oder ich uns ich kind eia wort. Schatz kommst te bilder worden an servus um warmer. Sto weste sagte her unten blieb ich guter wuchs. Fruh sto orte hof nein noch. Immer wu davon blick zu komme ruhen mu. Sag nachmittag ich sauberlich hausdacher kuchenture mag dus. "+
-    "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln.";
-	private String message_2="Es betrubtes pa dammerung um plaudernd.";
+	private String message_1="Oder ich uns ich kind eia wort. Schatz kommst te bilder worden an servus um warmer. Sto weste sagte her unten blieb ich guter wuchs. Fruh sto orte hof nein noch. Immer wu davon blick zu komme ruhen mu. Sag nachmittag ich sauberlich hausdacher kuchenture mag dus."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+ 
+"Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlic";
+	private String message_2="Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es be";
 //	These are the parameter for each client for connecting 
 	private String server, username;
 	private int port;
 //	This is for stop the running of my client
 	protected boolean      isStopped    = false;
 //	Variables for experiments
-	private static long waitingTime=0;
+	private static double waitingTime=0;
 	private static int operationToPerform=-1;
 	private static long durationTime=0;
-	
+	private static int messagetipe=0;
 	
 	
 	public ClientAlpha(String server, int port, String username) {
@@ -227,7 +235,8 @@ public class ClientAlpha implements Runnable{
 //							looking for message sent by someone 
 							transitObject.protocolNum=randomNum;
 							transitObject.userName=this.username;
-							forServer.sender=PossibleUsers.getRandomUser().toString();
+//							forServer.sender=PossibleUsers.getRandomUser().toString();
+							forServer.sender=this.getRandomReciever();
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
@@ -256,11 +265,18 @@ public class ClientAlpha implements Runnable{
 							transitObject.protocolNum=randomNum;
 							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username);
 //							select which message to send
-							if(rand.nextInt(2)==0){
+							if(this.messagetipe==0){
+								if(rand.nextInt(2)==0){
+									forServer.message=message_1;
+								}else{
+									forServer.message=message_2;
+								}
+							}else if(this.messagetipe==1){
 								forServer.message=message_1;
 							}else{
 								forServer.message=message_2;
 							}
+							
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							output.reset();
@@ -315,9 +331,16 @@ public class ClientAlpha implements Runnable{
 						case 5:
 //							create a new message for a specific receiver
 							transitObject.protocolNum=randomNum;
-							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,PossibleUsers.getRandomUser().toString());
+//							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,PossibleUsers.getRandomUser().toString());
+							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,this.getRandomReciever());
 //							select which message to send
-							if(rand.nextInt(2)==0){
+							if(this.messagetipe==0){
+								if(rand.nextInt(2)==0){
+									forServer.message=message_1;
+								}else{
+									forServer.message=message_2;
+								}
+							}else if(this.messagetipe==1){
 								forServer.message=message_1;
 							}else{
 								forServer.message=message_2;
@@ -379,7 +402,7 @@ public class ClientAlpha implements Runnable{
 					}
 //					Sleeping time for the next operation
 					long start = System.currentTimeMillis();
-					long end = start + waitingTime*1000; // 60 seconds * 1000 ms/sec
+					long end = (long) (start + waitingTime*1000); // 60 seconds * 1000 ms/sec
 					while (System.currentTimeMillis() < end)
 					{
 					    // run
@@ -448,18 +471,33 @@ public class ClientAlpha implements Runnable{
 	public synchronized void stop(){
         this.isStopped = true;
     }
+	
+	public String getRandomReciever(){
+		Random rand= new Random();
+		int randomNum=rand.nextInt(200);
+		return "Client_"+randomNum;
+	}
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		int portNumber = 5433;
 		String serverAddress = "localhost";
 		String userName = "user_cool";
-
+		
 		
 //		This switch is used to determine how to initialize the client
 //		based on the number of arguments 
 		switch(args.length) {
+			case 7:
+				messagetipe=Integer.parseInt(args[6]);
+				waitingTime=Double.parseDouble(args[5]);
+				operationToPerform=Integer.parseInt(args[4]);
+				serverAddress = args[3];
+				portNumber= Integer.parseInt(args[2]);
+				userName=args[1];
+				durationTime=Long.parseLong(args[0]);
+				break;
 			case 6:
-				waitingTime=Integer.parseInt(args[5]);
+				waitingTime=Double.parseDouble(args[5]);
 				operationToPerform=Integer.parseInt(args[4]);
 				serverAddress = args[3];
 				portNumber= Integer.parseInt(args[2]);

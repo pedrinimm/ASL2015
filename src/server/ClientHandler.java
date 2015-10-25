@@ -74,6 +74,11 @@ public class ClientHandler implements Runnable{
 		  	//---end
 		 log.info("System_Running\t"+System.currentTimeMillis());
 		 int counter=0;
+//		 for throughput
+		 long start_thr = System.currentTimeMillis();
+		 int counter_thr=0;
+		 long end_thr = System.currentTimeMillis() + 1*1000;
+//		 end for throughput
 		 try {
 //			 	create the object protocol to understand what the client wants
 			 	Protocol objectTransit=new Protocol(99,"");
@@ -330,6 +335,12 @@ public class ClientHandler implements Runnable{
 	            			}
 	            			log.info("Session_Initialized\t"+clientOption+"\t"+objectTransit.counter+"\t"+System.currentTimeMillis());
 	            			break;
+	            	}
+	            	counter_thr++;
+	            	if(System.currentTimeMillis()>end_thr){
+	            		log.info("Log_throughput\t"+counter_thr);
+	            		end_thr=System.currentTimeMillis()+1*1000;
+	            		counter_thr=0;
 	            	}
 	            	while(true){
 	            		objectTransit = (Protocol) input.readObject();

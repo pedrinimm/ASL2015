@@ -17,6 +17,7 @@ from os import listdir
 from os.path import isfile, join
 import csv 
 import codecs
+import copy
 
 env.key_filename='./asl15.pem'
 
@@ -26,8 +27,14 @@ env.roledefs= {
 	'dryad01':['mpedro@dryad01'],
 	'dryad08':['mpedro@dryad08'],
 	'local':['pedrini@localhost'],
+	'dbAmazon':['ubuntu@52.30.249.149'],
+	'midAmazon':['ubuntu@52.30.231.160'],
+	'cliAmazon':['ubuntu@52.30.190.106'],
+	'midAmazon2':['ubuntu@52.19.10.233'],
+	'cliAmazon2':['ubuntu@52.17.52.80'],
 	'dryad02':['mpedro@dryad02']
 }
+
 
 def createApplications(experimentID):
 	#create log folder 
@@ -76,10 +83,87 @@ def getClientLog(experimentID):
 	local("mkdir ./logs_exp_%S/clients"% experimentID)
 	get(remote_path="./*.log", local_path="./logs_exp_%S/clients"% experimentID)
 
+def fullAmazon(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,duration,serverPort,serverAddress,serverAddress2,operationType,workload,noClients):
+	# fab -R local fullAmazon:experimentID=stability_1,dbServer=52.30.249.149,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=30,listeningPort=5432,duration=30,serverPort=5433,serverAddress=52.30.231.160,serverAddress2=52.19.10.233,operationType=5,workload=0.25,noClients=15
+	# local("mkdir logs_exp_{0}".format(experimentID))
+
+	# local("fab -R local installDBAmazon")
+
+	# local("fab -R midAmazon intsallBasicTools")
+	# local("fab -R cliAmazon intsallBasicTools")
+	# local("fab -R midAmazon2 intsallBasicTools")
+	# local("fab -R cliAmazon2 intsallBasicTools")
+
+	local("fab -R midAmazon moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
+	local("fab -R midAmazon2 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
+	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5}".format(duration,serverPort,serverAddress,operationType,workload,noClients))
+	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5}".format(duration,serverPort,serverAddress2,operationType,workload,noClients))
+	# wait for a cliens to be done
+	waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	print(waitTime)
+	time.sleep(waitTime)
+	local("mkdir logs_exp_{0}".format(experimentID))
+	local("mkdir logs_exp_{0}_1".format(experimentID))
+	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}".format(experimentID))
+	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}".format(experimentID))
+	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+
+def getLogsMidAmaz(destination):
+	get(remote_path="./*.log", local_path="{0}/".format(destination))
+	run('killall java')
+	run('rm *.log')
+
+def getLogsCliAmaz(destination):
+	get(remote_path="./*.log", local_path="{0}/".format(destination))
+	run('rm *.log')
+	
+
+def moveCompileMiddleAmazon(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort):
+	# put("../../Middleware","/home/ubuntu")
+	# run("cd Middleware && ant clean")
+	# run("cd Middleware && ant Middleware")
+	run('dtach -n `mktemp -u /tmp/detach.XXX` java -Dlog4j.configurationFile=/home/ubuntu/Middleware/src/log4j2.xml -jar ./Middleware/dist/jar/Server-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort))
+
+def moveCompileClientsAmazon(duration,serverPort,serverAddress,operationType,workload,noClients):
+	# put("../../Middleware","/home/ubuntu")
+	# run("cd Middleware && ant clean")
+	# run("cd Middleware && ant Client")
+	#run clients
+	userName=""
+	for i in range(int(noClients)):
+		# print(i)
+		userName="Client_{0}".format(i)
+		run('dtach -n `mktemp -u /tmp/{1}.XXX` java -Dlog4j.configurationFile=/home/ubuntu/Middleware/src/log4j2.xml -jar  ./Middleware/dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
+
+
+
+def installDBAmazon():
+	# fab -R local installDBAmazon
+	local("fab -R dbAmazon intsallBasicTools")
+	local("fab -R dbAmazon installPostgresql2")
+	# local(echo "after this modify the files in the postgres server and restart")
+	# local(echo "sudo nano /etc/postgresql/9.3/main/pg_hba.conf")
+	# local(echo "sudo nano /etc/postgresql/9.3/main/postgresql.conf")
+	# local(echo "sudo service postgresql restart")
+
+def intsallBasicTools():
+	sudo('apt-get update')
+	sudo('apt-get install build-essential')
+	sudo('apt-get install default-jdk')
+	sudo('apt-get install flex bison ant dtach')
+	
+
+def installPostgresql2():
+	sudo('apt-get install postgresql postgresql-contrib')
+	put("messaging.tar","/home/ubuntu/")
+	sudo('psql postgres', user="postgres")
+	sudo('createdb -h localhost -e messaging',user="postgres")
+	sudo('pg_restore -F tar -d messaging /home/ubuntu/messaging.tar',user="postgres")
 
 def installPostgresql():
 	local('curl -O ftp://ftp.postgresql.org/pub/source/v9.4.4/postgresql-9.4.4.tar.bz2')
-	put("./postgresql*","/home/mpedro")
+	put("./postgresql*","/home/ubuntu")
 	# run('screen -S database')
 	run('tar xvjf postgresql*')
 	run('mkdir /mnt/local/mpedro')
@@ -110,8 +194,8 @@ def installPostgresql():
 	run('/mnt/local/mpedro/bin/bin/pg_restore -F tar -d messaging /mnt/local/mpedro/messaging.tar')
 
 
-def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,duration,serverPort,serverAddress,operationType,workload,noClients):
-	# fab -R local fullRunLocal:experimentID=alpha,dbServer=localhost,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=100,listeningPort=5432,duration=30,serverPort=5433,serverAddress=localhost,operationType=-1,workload=1,noClients=2
+def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,duration,serverPort,serverAddress,operationType,workload,noClients,messageType):
+	# fab -R local fullRunLocal:experimentID=alpha,dbServer=localhost,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=100,listeningPort=5432,duration=30,serverPort=5433,serverAddress=localhost,operationType=-1,workload=1,noClients=2,messageType=0
 	#create log folder 
 	local("mkdir logs_exp_{0}".format(experimentID))
 	local("cd .. && ant clean")
@@ -124,8 +208,10 @@ def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,
 	for i in range(int(noClients)):
 		# print(i)
 		userName="Client_{0}".format(i)
-		local('screen -dmS {1} java -Dlog4j.configurationFile=../src/log4j2.xml -jar  ../dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5}'.format(duration,userName,serverPort,serverAddress,operationType,workload))
-	time.sleep(int(duration)+10)
+		local('screen -dmS {1} java -Dlog4j.configurationFile=../src/log4j2.xml -jar  ../dist/jar/client-Messaging.jar {0} {1} {2} {3} {4} {5} {6}'.format(duration,userName,serverPort,serverAddress,operationType,workload,messageType))
+	waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	print(waitTime)
+	time.sleep(waitTime)
 	local('mv *.log logs_exp_{0}/'.format(experimentID))
 	local('killall java')
 	# local('rm logs_exp_{0}/.DS_Store'.format(experimentID))
@@ -139,6 +225,8 @@ def parsing(pathOfLogs):
 	middleware=[]
 	# this is to store the timing for the database
 	database=[]
+	# all throughput
+	throughput=[]
 	for f in listdir(pathOfLogs):
 		with open(pathOfLogs+f,'rU') as fo:
 			# this if check wheather is a log from a handler or a client
@@ -158,6 +246,8 @@ def parsing(pathOfLogs):
 				controller2=1
 				operation=""
 				operation2=""
+				# individual throughput per handler
+				iThroughput=[]
 				for row in spamreader:
 					
 					# first we check if the line in the file has enough parameters
@@ -200,13 +290,23 @@ def parsing(pathOfLogs):
 									cHandler.append([row[1],row[2],time2,row[3],int(row[3])-int(time2)])
 									controller2=1
 								# print(operation2,time2,controller2)
-				print(f)
+					else:
+						# print(row[0])
+						if row[0].find('_throughput')!=-1:
+							# print(row[1])
+							iThroughput.append(row[1])
+
+
+				# print(iThroughput)
 				print("request")
 				print(len(cHandler))
 				print("database")
 				print(len(cDatabase))
+				print("throughput")
+				print(len(iThroughput))
 				middleware.append(cHandler)
 				database.append(cDatabase)
+				throughput.append(iThroughput)
 				# del cHandler[:]
 				# del cDatabase[:]
 				# for line in fo:
@@ -240,6 +340,8 @@ def parsing(pathOfLogs):
 				print(len(client))
 				clients.append(client)
 				# del client[:]
+	
+
 	print("Done parsing")
 	plt.figure(1)
 	plt.hold(True)
@@ -282,8 +384,49 @@ def parsing(pathOfLogs):
 
 		for measure in item:
 			x.append(measure[4])
-			y.append(measure[1])
+			y.append(measure)
 		plt.plot(x)
+
+	plt.figure(4)
+	plt.hold(True)
+	plt.suptitle('Middleware Handlers Individual Throughput')
+	plt.ylabel('Throughput (Request/Second)', fontsize=14)
+	plt.xlabel('Seconds', fontsize=14)
+	# plt.ylim((0,600))
+	c=[]
+	a=c
+	b=[]
+	for item in throughput:
+		item= map(int, item)
+		# print(len(item))
+		b=item
+		if len(a) < len(b):
+			c = copy.copy(b)
+			c = map(int, c)
+			for i in range(len(a)):
+				c[i] = c[i]+a[i]
+		else:
+			c = copy.copy(a)
+			c = map(int, c)
+			for i in range(len(b)):
+				c[i] = c[i]+b[i]
+			# c[:len(b)] += b
+		a=[]
+		a=c
+		a = map(int, a)
+		c=[]
+	# for item in throughput:
+	# 	x=[]
+	# 	y=[]
+	# 	count=0
+	# 	y.append(0)
+	# 	for indThr in item:
+	# 		count=count+1
+	# 		y.append(indThr)
+	# 	x=range(count+1)
+	# 	plt.plot(y)
+	print("Final size of a {0}".format(len(a)))
+	plt.plot(a)
 	plt.show()
 	
 	
