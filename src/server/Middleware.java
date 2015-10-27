@@ -57,11 +57,11 @@ public class Middleware implements Runnable{
 		connectingServer.setupDatabaseConnectionPool("postgres", "squirrel","localhost", "messaging", 100, 9000);
 		threadPool = Executors.newFixedThreadPool(1);
     }
-    public Middleware(String dbServer,String dbName,String dbUser,String dbPassword,int noConnections,int port){
+    public Middleware(String dbServer,String dbName,String dbUser,String dbPassword,int noConnections,int port, int noConnDB){
     	this.serverPort = port+1;
 //    	this.durationTime=timing;
     	connectingServer=new DatabaseConnectorServer();
-		connectingServer.setupDatabaseConnectionPool(dbUser, dbPassword,dbServer, dbName, noConnections, port);
+		connectingServer.setupDatabaseConnectionPool(dbUser, dbPassword,dbServer, dbName, noConnDB, port);
 		threadPool = Executors.newFixedThreadPool(noConnections);
     }
     @Override
@@ -170,6 +170,7 @@ public class Middleware implements Runnable{
 		String dbPassword="";
 		String dbName="";
 		int noConnections=0;
+		int noConnDB=0;
 		int port=0;
 //		long time=5;
 		
@@ -178,7 +179,18 @@ public class Middleware implements Runnable{
 //		This switch is used to determine how to initialize the client
 //		based on the number of arguments 
 		switch(args.length) {
-			case 6:
+		case 7:
+			dbServer=args[0];
+			dbName=args[1];
+			dbUser=args[2];
+			dbPassword=args[3];
+			noConnections=Integer.parseInt(args[4]);
+			port=Integer.parseInt(args[5]);
+			noConnDB=Integer.parseInt(args[6]);
+			server = new Middleware(dbServer,dbName,dbUser,dbPassword,noConnections,port,noConnDB);
+			new Thread(server).start();
+			break;	
+		case 6:
 				dbServer=args[0];
 				dbName=args[1];
 				dbUser=args[2];
@@ -186,7 +198,7 @@ public class Middleware implements Runnable{
 				noConnections=Integer.parseInt(args[4]);
 				port=Integer.parseInt(args[5]);
 //				time=Long.parseLong(args[6]);
-				server = new Middleware(dbServer,dbName,dbUser,dbPassword,noConnections,port);
+				server = new Middleware(dbServer,dbName,dbUser,dbPassword,noConnections,port,noConnDB);
 				new Thread(server).start();
 				break;
 			case 1:
@@ -195,7 +207,7 @@ public class Middleware implements Runnable{
 				new Thread(server).start();
 				break;
 			default:
-				server = new Middleware("localhost","messaging","postgres","squirrel",100,5432);
+				server = new Middleware("localhost","messaging","postgres","squirrel",100,5432,100);
 				new Thread(server).start();
 				break;
 		}
