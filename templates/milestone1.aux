@@ -15,54 +15,62 @@
 \newlabel{sec:design-decisions}{{1.1.3}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.1.4}Performance characteristics}{4}}
 \newlabel{sec:performance-characteristics}{{1.1.4}{4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Middleware}{4}}
-\newlabel{sec:middleware}{{1.2}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Design overview}{4}}
-\newlabel{sec:design-overview}{{1.2.1}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Main middleware component schema.\relax }}{4}}
-\newlabel{middle}{{2}{4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Interfacing with clients}{5}}
-\newlabel{sec:interfacing-with-clients}{{1.2.2}{5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Queuing and Connection pool to database}{5}}
-\newlabel{sec:queuing-and-connection-pool-to-database}{{1.2.3}{5}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Behavior of the system, M and N is the number of connection in each pool, the may be equal or differetn. The number of connections in the pool may affect the througput in the system.\relax }}{6}}
-\newlabel{pool}{{3}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.4}Performance characteristics}{6}}
-\newlabel{sec:performance-characteristics-1}{{1.2.4}{6}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Clients}{6}}
-\newlabel{sec:clients}{{1.3}{6}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.1}Design and interface}{6}}
-\newlabel{sec:design-and-interface}{{1.3.1}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Client, middleware and database interaction procesdure. This diagram show the operations that a client can requesta and the behavior between thr C:Client, M:Middleware and D:Database.\relax }}{7}}
-\newlabel{interaction}{{4}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.2}Instrumentation}{7}}
-\newlabel{sec:instrumentation}{{1.3.2}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.3}Workloads and deployment}{7}}
-\newlabel{sec:workloads-and-deployment}{{1.3.3}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.4}Sanity checks}{7}}
-\newlabel{sec:sanity-checks}{{1.3.4}{7}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{7}}
-\newlabel{sec:experimental-setup}{{2}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}System Configurations}{7}}
-\newlabel{sec:system-configurations}{{2.1}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Configuration and Deployment mechanisms}{7}}
-\newlabel{sec:configuration-and-deployment-mechanisms}{{2.2}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Logging and Benchmarking mechanisms}{7}}
-\newlabel{sec:logging-and-benchmarking-mechanisms}{{2.3}{7}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation}{7}}
-\newlabel{sec:evaluation}{{3}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Database performance evaluation in a t2.medium amazon instance, increasing the number of client in order to observe the maximum amount of transaction it can process.\relax }}{4}}
+\newlabel{pgbench}{{2}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Middleware}{5}}
+\newlabel{sec:middleware}{{1.2}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Design overview}{5}}
+\newlabel{sec:design-overview}{{1.2.1}{5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Main middleware component schema.\relax }}{5}}
+\newlabel{middle}{{3}{5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Interfacing with clients}{6}}
+\newlabel{sec:interfacing-with-clients}{{1.2.2}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Queuing and Connection pool to database}{6}}
+\newlabel{sec:queuing-and-connection-pool-to-database}{{1.2.3}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Behavior of the system, M and N is the number of connection in each pool, the may be equal or differetn. The number of connections in the pool may affect the througput in the system.\relax }}{6}}
+\newlabel{pool}{{4}{6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.4}Performance characteristics}{7}}
+\newlabel{sec:performance-characteristics-1}{{1.2.4}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Clients}{7}}
+\newlabel{sec:clients}{{1.3}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.1}Design and interface}{7}}
+\newlabel{sec:design-and-interface}{{1.3.1}{7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Client, middleware and database interaction procesdure. This diagram show the operations that a client can requesta and the behavior between thr C:Client, M:Middleware and D:Database.\relax }}{7}}
+\newlabel{interaction}{{5}{7}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.2}Instrumentation}{8}}
+\newlabel{sec:instrumentation}{{1.3.2}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.3}Workloads and deployment}{8}}
+\newlabel{sec:workloads-and-deployment}{{1.3.3}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.4}Sanity checks}{8}}
+\newlabel{sec:sanity-checks}{{1.3.4}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{8}}
+\newlabel{sec:experimental-setup}{{2}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}System Configurations}{8}}
+\newlabel{sec:system-configurations}{{2.1}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Configuration and Deployment mechanisms}{8}}
+\newlabel{sec:configuration-and-deployment-mechanisms}{{2.2}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Logging and Benchmarking mechanisms}{8}}
+\newlabel{sec:logging-and-benchmarking-mechanisms}{{2.3}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Different logging entry point during the lifespan of a single request in the messaging system\relax }}{8}}
+\newlabel{logging}{{6}{8}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation}{9}}
+\newlabel{sec:evaluation}{{3}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}System Stability}{9}}
+\newlabel{sec:system-stability}{{3.1}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \relax }}{9}}
+\newlabel{stabilityRP}{{7}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \relax }}{9}}
+\newlabel{stabilityTHR}{{8}{9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}System Throughput}{9}}
+\newlabel{sec:system-throughput}{{3.2}{9}}
 \bibstyle{plain}
 \bibdata{sample}
 \bibcite{postsql}{1}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}System Stability}{8}}
-\newlabel{sec:system-stability}{{3.1}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}System Throughput}{8}}
-\newlabel{sec:system-throughput}{{3.2}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}System Scalability}{8}}
-\newlabel{sec:system-scalability}{{3.3}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Response Time Variations}{8}}
-\newlabel{sec:response-time-variations}{{3.4}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}$2^k$ Experiment}{8}}
-\newlabel{sec:k-experiment}{{3.5}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Conclusion}{8}}
-\newlabel{sec:conclusion}{{3.6}{8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}System Scalability}{10}}
+\newlabel{sec:system-scalability}{{3.3}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Response Time Variations}{10}}
+\newlabel{sec:response-time-variations}{{3.4}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}$2^k$ Experiment}{10}}
+\newlabel{sec:k-experiment}{{3.5}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Conclusion}{10}}
+\newlabel{sec:conclusion}{{3.6}{10}}

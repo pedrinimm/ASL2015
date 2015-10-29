@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.3.9)  26 OCT 2015 09:40
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2014.3.9)  29 OCT 2015 14:43
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -343,102 +343,150 @@ Underfull \hbox (badness 10000) in paragraph at lines 53--55
 
  []
 
-[3]
+[3] <pgbench.png, id=22, 564.6696pt x 304.0158pt>
+File: pgbench.png Graphic file (type png)
+ <use pgbench.png>
+Package pdftex.def Info: pgbench.png used on input line 63.
+(pdftex.def)             Requested size: 282.3341pt x 152.00752pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 68--69
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 70--71
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 72--73
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 74--76
+
+ []
+
+[4 <./pgbench.png>]
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ™ in font cmr10!
 
-Underfull \hbox (badness 10000) in paragraph at lines 65--67
+Underfull \hbox (badness 10000) in paragraph at lines 82--84
 
  []
 
-<midleware.png, id=22, 710.655pt x 417.56pt>
+<midleware.png, id=27, 710.655pt x 417.56pt>
 File: midleware.png Graphic file (type png)
  <use midleware.png>
-Package pdftex.def Info: midleware.png used on input line 71.
-(pdftex.def)             Requested size: 355.32663pt x 208.77948pt.
+Package pdftex.def Info: midleware.png used on input line 88.
+(pdftex.def)             Requested size: 213.19814pt x 125.26895pt.
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no ™ in font cmr10!
 
-Underfull \hbox (badness 10000) in paragraph at lines 78--79
-
- []
-
-[4 <./midleware.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 80--81
+Underfull \hbox (badness 10000) in paragraph at lines 95--96
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 82--83
+Underfull \hbox (badness 10000) in paragraph at lines 97--98
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 84--86
+Underfull \hbox (badness 10000) in paragraph at lines 99--100
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 92--93
+Underfull \hbox (badness 10000) in paragraph at lines 101--103
+
+ []
+
+[5 <./midleware.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 109--110
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 114--115
+Underfull \hbox (badness 10000) in paragraph at lines 131--132
 
  []
 
-<connpool.png, id=27, 1021.8175pt x 566.115pt>
+<connpool.png, id=32, 1021.8175pt x 566.115pt>
 File: connpool.png Graphic file (type png)
  <use connpool.png>
-Package pdftex.def Info: connpool.png used on input line 119.
-(pdftex.def)             Requested size: 452.9679pt x 250.95721pt.
+Package pdftex.def Info: connpool.png used on input line 136.
+(pdftex.def)             Requested size: 306.54762pt x 169.8358pt.
 
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 125--126
+Underfull \hbox (badness 10000) in paragraph at lines 142--143
 
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 136--137
+[6 <./connpool.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 153--154
 
  []
 
-[6 <./connpool.png>] <prtocol.png, id=35, 563.10374pt x 598.235pt>
+<prtocol.png, id=37, 563.10374pt x 598.235pt>
 File: prtocol.png Graphic file (type png)
-
-<use prtocol.png>
-Package pdftex.def Info: prtocol.png used on input line 143.
+ <use prtocol.png>
+Package pdftex.def Info: prtocol.png used on input line 160.
 (pdftex.def)             Requested size: 168.93242pt x 179.47188pt.
-) (./expsetup.tex [7 <./prtocol.png>]) (./milestone1.bbl)
-[8] (./milestone1.aux) ) 
+)
+(./expsetup.tex [7 <./prtocol.png>]
+<logging.png, id=43, 915.42pt x 354.32375pt>
+File: logging.png Graphic file (type png)
+ <use logging.png>
+Package pdftex.def Info: logging.png used on input line 23.
+(pdftex.def)             Requested size: 274.62811pt x 106.29794pt.
+
+Underfull \hbox (badness 10000) in paragraph at lines 28--29
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 30--31
+
+ []
+
+[8 <./logging.png>] <stabilityRP.png, id=48, 678.8562pt x 462.0462pt>
+File: stabilityRP.png Graphic file (type png)
+
+<use stabilityRP.png>
+Package pdftex.def Info: stabilityRP.png used on input line 42.
+(pdftex.def)             Requested size: 237.60323pt x 161.71858pt.
+ <stabilityTHR.png, id=49, 578.16pt x 433.62pt>
+File: stabilityTHR.png Graphic file (type png)
+
+<use stabilityTHR.png>
+Package pdftex.def Info: stabilityTHR.png used on input line 50.
+(pdftex.def)             Requested size: 260.16959pt x 195.1272pt.
+ [9 <./stabilityRP.png> <./stabilityTHR.png>])
+(./milestone1.bbl) [10] (./milestone1.aux) ) 
 Here is how much of TeX's memory you used:
- 4365 strings out of 494536
- 68302 string characters out of 6167447
- 130086 words of memory out of 5000000
- 7570 multiletter control sequences out of 15000+600000
- 9504 words of font info for 33 fonts, out of 8000000 for 9000
+ 4387 strings out of 494536
+ 68664 string characters out of 6167447
+ 129122 words of memory out of 5000000
+ 7589 multiletter control sequences out of 15000+600000
+ 9158 words of font info for 32 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
- 42i,7n,40p,984b,270s stack positions out of 5000i,500n,10000p,200000b,80000s
-</usr/local/texlive/2013basic/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2013basic/texmf-dist/fonts/type
-1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2013basic/texmf-dist/fonts/
-type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2013basic/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2013basic/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2013basic/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2013basic/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2013basic/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/local/texlive/2013bas
-ic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
-Output written on milestone1.pdf (8 pages, 264394 bytes).
+ 42i,7n,40p,984b,272s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/local/texlive/2013basic/texmf
+-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/local/texlive/2013basic/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2013bas
+ic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/201
+3basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/
+2013basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texli
+ve/2013basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/te
+xlive/2013basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local
+/texlive/2013basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb>
+Output written on milestone1.pdf (10 pages, 400346 bytes).
 PDF statistics:
- 76 PDF objects out of 1000 (max. 8388607)
- 48 compressed objects within 1 object stream
+ 86 PDF objects out of 1000 (max. 8388607)
+ 49 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 21 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
