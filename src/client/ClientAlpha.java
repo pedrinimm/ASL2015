@@ -50,7 +50,7 @@ public class ClientAlpha implements Runnable{
     protected Socket clientSocket = null;
 	
     //Messages
-	private String message_1="Oder ich uns ich kind eia wort. Schatz kommst te bilder worden an servus um warmer. Sto weste sagte her unten blieb ich guter wuchs. Fruh sto orte hof nein noch. Immer wu davon blick zu komme ruhen mu. Sag nachmittag ich sauberlich hausdacher kuchenture mag dus."+
+	public String message_1="Oder ich uns ich kind eia wort. Schatz kommst te bilder worden an servus um warmer. Sto weste sagte her unten blieb ich guter wuchs. Fruh sto orte hof nein noch. Immer wu davon blick zu komme ruhen mu. Sag nachmittag ich sauberlich hausdacher kuchenture mag dus."+
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
@@ -60,7 +60,7 @@ public class ClientAlpha implements Runnable{
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlich handarbeit aneinander brotkugeln."+ 
 "Denken freute ige storen vom gehort wer tat. Hochstens da schranken mudigkeit im polemisch. Orte wach zu wand muhe scho ab. Lehrlingen pa zu drechslers freundlic";
-	private String message_2="Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es be";
+	public String message_2="Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es betrubtes pa dammerung um plaudernd.Es be";
 //	These are the parameter for each client for connecting 
 	private String server, username;
 	private int port;
@@ -68,9 +68,9 @@ public class ClientAlpha implements Runnable{
 	protected boolean      isStopped    = false;
 //	Variables for experiments
 	private static double waitingTime=0;
-	private static int operationToPerform=-1;
+	private static int operationToPerform=5;
 	private static long durationTime=0;
-	private static int messagetipe=0;
+	private static int messagetipe=10;
 	
 	
 	public ClientAlpha(String server, int port, String username) {
@@ -265,17 +265,22 @@ public class ClientAlpha implements Runnable{
 							transitObject.protocolNum=randomNum;
 							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username);
 //							select which message to send
-							if(this.messagetipe==0){
-								if(rand.nextInt(2)==0){
-									forServer.message=message_1;
-								}else{
-									forServer.message=message_2;
-								}
-							}else if(this.messagetipe==1){
-								forServer.message=message_1;
-							}else{
-								forServer.message=message_2;
+//							if(this.messagetipe==0){
+//								if(rand.nextInt(2)==0){
+//									forServer.message=message_1;
+//								}else{
+//									forServer.message=message_2;
+//								}
+//							}else if(this.messagetipe==1){
+//								forServer.message=message_1;
+//							}else{
+//								forServer.message=message_2;
+//							}
+//							scaling the message size
+							for(int i=0;i<this.messagetipe;i++){
+								message_2.concat(message_2);
 							}
+							forServer.message=message_2;
 							
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
@@ -334,17 +339,24 @@ public class ClientAlpha implements Runnable{
 //							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,PossibleUsers.getRandomUser().toString());
 							forServer=new Message("Time made "+new Timestamp(System.currentTimeMillis()),this.username,this.getRandomReciever());
 //							select which message to send
-							if(this.messagetipe==0){
-								if(rand.nextInt(2)==0){
-									forServer.message=message_1;
-								}else{
-									forServer.message=message_2;
-								}
-							}else if(this.messagetipe==1){
-								forServer.message=message_1;
-							}else{
-								forServer.message=message_2;
+//							if(this.messagetipe==0){
+//								if(rand.nextInt(2)==0){
+//									forServer.message=message_1;
+//								}else{
+//									forServer.message=message_2;
+//								}
+//							}else if(this.messagetipe==1){
+//								forServer.message=message_1;
+//							}else{
+//								forServer.message=message_2;
+//							}
+//							scaling the message size
+							String mesg= this.message_2;
+							for(int i=0;i<this.messagetipe;i++){
+								mesg=mesg+ this.message_2;
 							}
+							forServer.message=mesg;
+							
 							transitObject.newMessage=forServer;
 							transitObject.counter=counter;
 							transitObject.newQueue.name=PossibleQueues.getRandomQueue().toString();

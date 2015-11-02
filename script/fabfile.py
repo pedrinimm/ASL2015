@@ -13,7 +13,7 @@ import sys
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy as np
-import scipy.stats as ss
+from scipy import stats 
 import math
 from os import listdir
 from os.path import isfile, join
@@ -29,11 +29,15 @@ env.roledefs= {
 	'dryad01':['mpedro@dryad01'],
 	'dryad08':['mpedro@dryad08'],
 	'local':['pedrini@localhost'],
-	'dbAmazon':['ubuntu@52.31.10.59'],
-	'midAmazon':['ubuntu@52.19.58.185'],
-	'cliAmazon':['ubuntu@52.31.29.34'],
-	'midAmazon2':['ubuntu@52.31.31.179'],
-	'cliAmazon2':['ubuntu@52.31.28.134'],
+	'dbAmazon':['ubuntu@52.30.174.216'],
+	'midAmazon':['ubuntu@52.30.110.167'],
+	'cliAmazon':['ubuntu@52.30.162.52'],
+	'midAmazon2':['ubuntu@52.30.183.159'],
+	'cliAmazon2':['ubuntu@52.30.226.12'],
+	'midAmazon3':['ubuntu@52.18.179.82'],
+	'cliAmazon3':['ubuntu@52.19.77.148'],
+	'midAmazon4':['ubuntu@52.30.117.151'],
+	'cliAmazon4':['ubuntu@52.30.240.167'],
 	'dryad02':['mpedro@dryad02']
 }
 
@@ -85,8 +89,33 @@ def getClientLog(experimentID):
 	local("mkdir ./logs_exp_%S/clients"% experimentID)
 	get(remote_path="./*.log", local_path="./logs_exp_%S/clients"% experimentID)
 
-def fullAmazon(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,operationType,workload,noClients,messageType):
-	# fab -R local fullAmazon:experimentID=response_time_1_m2_mid_2,dbServer=52.31.10.59,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=30,listeningPort=5432,noConnDB=30,duration=600,serverPort=5433,serverAddress=52.19.58.185,serverAddress2=52.31.31.179,operationType=5,workload=0,noClients=15,messageType=2
+def fullAmazon1(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,operationType,workload,noClients,messageType):
+	# fab -R local fullAmazon1:experimentID=resp_time_1_mid1_cl5_msg1,dbServer=52.30.174.216,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=15,listeningPort=5432,noConnDB=5,duration=180,serverPort=5433,serverAddress=52.30.110.167,operationType=5,workload=0,noClients=15,messageType=1
+	# local("mkdir logs_exp_{0}".format(experimentID))
+
+	# local("fab -R local installDBAmazon")
+
+	# local("fab -R midAmazon intsallBasicTools")
+	# local("fab -R cliAmazon intsallBasicTools")
+
+
+	local("fab -R midAmazon moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	
+	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
+	
+	# wait for a cliens to be done
+	waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	local("date")
+	print(waitTime)
+	time.sleep(waitTime)
+	local("mkdir logs_exp_{0}_1".format(experimentID))
+	
+	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	
+
+def fullAmazon2(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,operationType,workload,noClients,messageType):
+	# fab -R local fullAmazon2:experimentID=scalability_1_cl15_mid2_con5,dbServer=52.31.51.37,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=5,listeningPort=5432,noConnDB=5,duration=180,serverPort=5433,serverAddress=52.31.51.163,serverAddress2=52.31.51.163,operationType=5,workload=0,noClients=15,messageType=2
 	# local("mkdir logs_exp_{0}".format(experimentID))
 
 	# local("fab -R local installDBAmazon")
@@ -101,15 +130,95 @@ def fullAmazon(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,li
 	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
 	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress2,operationType,workload,noClients,messageType))
 	# wait for a cliens to be done
+	# waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	local("date")
+	print(600)
+	time.sleep(640)
+	local("mkdir logs_exp_{0}_1".format(experimentID))
+	local("mkdir logs_exp_{0}_2".format(experimentID))
+	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_2".format(experimentID))
+
+def fullAmazon3(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,serverAddress3,operationType,workload,noClients,messageType):
+	# fab -R local fullAmazon:experimentID=thr_mid3_cl68,dbServer=52.17.148.247,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=100,listeningPort=5432,noConnDB=30,duration=300,serverPort=5433,serverAddress=52.31.51.163,serverAddress2=52.30.183.159,serverAddress3=52.30.200.160,operationType=5,workload=0,noClients=68,messageType=2
+
+	# local("mkdir logs_exp_{0}".format(experimentID))
+
+	# local("fab -R local installDBAmazon")
+
+	# local("fab -R midAmazon intsallBasicTools")
+	# local("fab -R cliAmazon intsallBasicTools")
+	# local("fab -R midAmazon2 intsallBasicTools")
+	# local("fab -R cliAmazon2 intsallBasicTools")
+	# local("fab -R midAmazon3 intsallBasicTools")
+	# local("fab -R cliAmazon3 intsallBasicTools")
+
+	local("fab -R midAmazon moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R midAmazon2 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R midAmazon3 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress2,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon3 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress3,operationType,workload,noClients,messageType))
+
+	# wait for a cliens to be done
 	waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	local("date")
 	print(waitTime)
 	time.sleep(waitTime)
-	local("mkdir logs_exp_{0}".format(experimentID))
 	local("mkdir logs_exp_{0}_1".format(experimentID))
-	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}".format(experimentID))
-	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
-	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}".format(experimentID))
-	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("mkdir logs_exp_{0}_2".format(experimentID))
+	local("mkdir logs_exp_{0}_3".format(experimentID))
+	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	local("fab -R cliAmazon3 getLogsCliAmaz:destination=logs_exp_{0}_3".format(experimentID))
+	local("fab -R midAmazon3 getLogsMidAmaz:destination=logs_exp_{0}_3".format(experimentID))
+
+def fullAmazon4(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,serverAddress3,serverAddress4,operationType,workload,noClients,messageType):
+	# fab -R local fullAmazon4:experimentID=scalability_1_cl15_mid4_con5,dbServer=52.31.51.37,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=5,listeningPort=5432,noConnDB=5,duration=180,serverPort=5433,serverAddress=52.31.51.163,serverAddress2=52.30.183.159,serverAddress3=52.18.179.82,serverAddress4=52.30.117.151,operationType=5,workload=0,noClients=15,messageType=2
+
+	# local("mkdir logs_exp_{0}".format(experimentID))
+
+	# local("fab -R local installDBAmazon")
+
+	# local("fab -R midAmazon intsallBasicTools")
+	# local("fab -R cliAmazon intsallBasicTools")
+	# local("fab -R midAmazon2 intsallBasicTools")
+	# local("fab -R cliAmazon2 intsallBasicTools")
+	# local("fab -R midAmazon3 intsallBasicTools")
+	# local("fab -R cliAmazon3 intsallBasicTools")
+	# local("fab -R midAmazon4 intsallBasicTools")
+	# local("fab -R cliAmazon4 intsallBasicTools")
+
+	local("fab -R midAmazon moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R midAmazon2 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R midAmazon3 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R midAmazon4 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress2,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon3 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress3,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon4 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress4,operationType,workload,noClients,messageType))
+
+	# # wait for a cliens to be done
+	# waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	local("date")
+	print(600)
+	time.sleep(640)
+	local("mkdir logs_exp_{0}_1".format(experimentID))
+	local("mkdir logs_exp_{0}_2".format(experimentID))
+	local("mkdir logs_exp_{0}_3".format(experimentID))
+	local("mkdir logs_exp_{0}_4".format(experimentID))
+	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
+	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	local("fab -R cliAmazon3 getLogsCliAmaz:destination=logs_exp_{0}_3".format(experimentID))
+	local("fab -R midAmazon3 getLogsMidAmaz:destination=logs_exp_{0}_3".format(experimentID))
+	local("fab -R cliAmazon4 getLogsCliAmaz:destination=logs_exp_{0}_4".format(experimentID))
+	local("fab -R midAmazon4 getLogsMidAmaz:destination=logs_exp_{0}_4".format(experimentID))
 
 def getLogsMidAmaz(destination):
 	get(remote_path="./*.log", local_path="{0}/".format(destination))
@@ -131,7 +240,7 @@ def moveCompileClientsAmazon(duration,serverPort,serverAddress,operationType,wor
 	# put("../../Middleware","/home/ubuntu")
 	# run("cd Middleware && ant clean")
 	# run("cd Middleware && ant Client")
-	#run clients
+	# run clients
 	userName=""
 	for i in range(int(noClients)):
 		# print(i)
@@ -197,7 +306,7 @@ def installPostgresql():
 
 
 def fullRunLocal(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,operationType,workload,noClients,messageType):
-	# fab -R local fullRunLocal:experimentID=alpha,dbServer=localhost,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=10,listeningPort=5432,noConnDB=4,duration=10,serverPort=5433,serverAddress=localhost,operationType=5,workload=0,noClients=40,messageType=1
+	# fab -R local fullRunLocal:experimentID=alpha,dbServer=localhost,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=5,listeningPort=5432,noConnDB=10,duration=10,serverPort=5433,serverAddress=localhost,operationType=5,workload=0,noClients=15,messageType=2
 	#create log folder 
 	local("mkdir logs_exp_{0}".format(experimentID))
 	local("cd .. && ant clean")
@@ -233,7 +342,7 @@ def parsing(pathOfLogs):
 		with open(pathOfLogs+f,'rU') as fo:
 			# this if check wheather is a log from a handler or a client
 			if f.find(handler)!=-1:
-				print("Log from server")
+				# print("Log from server")
 				# individual handler operations
 				cHandler=[]
 				# individual database time
@@ -290,6 +399,7 @@ def parsing(pathOfLogs):
 									# print("True")
 									name2=row[0]
 									cHandler.append([row[1],row[2],time2,row[3],int(row[3])-int(time2)])
+									# print(int(row[3])-int(time2))
 									controller2=1
 								# print(operation2,time2,controller2)
 					else:
@@ -300,12 +410,12 @@ def parsing(pathOfLogs):
 
 
 				# print(iThroughput)
-				print("request")
-				print(len(cHandler))
-				print("database")
-				print(len(cDatabase))
-				print("throughput")
-				print(len(iThroughput))
+				# print("request")
+				# print(len(cHandler))
+				# print("database")
+				# print(len(cDatabase))
+				# print("throughput")
+				# print(len(iThroughput))
 				middleware.append(cHandler)
 				database.append(cDatabase)
 				throughput.append(iThroughput)
@@ -314,7 +424,7 @@ def parsing(pathOfLogs):
 				# for line in fo:
 				
 			else:
-				print("Log from client or middleware")
+				# print("Log from client or middleware")
 				client=[]
 				spamreader = csv.reader(fo, delimiter='\t',)
 				# spamreader = csv.reader((line.replace('\0','') for line in fo), delimiter="\t")
@@ -339,44 +449,61 @@ def parsing(pathOfLogs):
 								# print("HERE")
 								client.append([row[1],row[2],time,row[3],int(row[3])-int(time)])
 								controller=1
-				print(len(client))
+				# print(len(client))
 				clients.append(client)
 				# del client[:]
 	
 
 	
 
-	print("Done parsing")
+	# print("Done parsing")
 	plt.figure(1)
 	plt.hold(True)
 	plt.suptitle('Clients')
 	plt.ylabel('Response Time (ms)', fontsize=14)
 	plt.xlabel('# of Request', fontsize=14)
 	# plt.ylim((0,600))
-	avg=[]
+	mean_over_client=[]
+	sem_over_client=[]
+	print("Total number of clients:\t{0}".format(len(clients)))
+	i=1
 	for item in clients:
 		x=[]
 		y=[]
 		for measure in item:
 			x.append(measure[4])
 			y.append(measure[1])
+		
+		mean_over_client.append(np.mean(x))
+		sem_over_client.append(stats.sem(x))
+		print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		i=i+1
 		plt.plot(x)
 
+	print("\nAverage total of waiting time for all clients\t{0}\n".format(np.mean(mean_over_client)))
 	plt.figure(2)
 	plt.hold(True)
 	plt.suptitle('Middleware')
 	plt.ylabel('Response Time (ms)', fontsize=14)
 	plt.xlabel('# of Request', fontsize=14)
 	# plt.ylim((0,600))
+	mean_over_middleware=[]
+	sem_over_middleware=[]
+	total_of_requests=0
+	i=1
 	for item in middleware:
 		x=[]
 		y=[]
-
 		for measure in item:
+			# print(measure[4])
 			x.append(measure[4])
 			y.append(measure[1])
+		mean_over_middleware.append(np.mean(x))
+		sem_over_middleware.append(stats.sem(x))
+		total_of_requests=total_of_requests+len(x)
+		print("Client_Handler_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		i=i+1
 		plt.plot(x)
-	
 	plt.figure(3)
 	plt.hold(True)
 	plt.suptitle('Database')
@@ -394,9 +521,10 @@ def parsing(pathOfLogs):
 
 	plt.figure(4)
 	plt.hold(True)
-	plt.suptitle('Middleware Handlers Individual Throughput')
-	plt.ylabel('Throughput (Request/Second)', fontsize=14)
-	plt.xlabel('Seconds', fontsize=14)
+	plt.suptitle('Middleware Throughput',fontsize=20,fontweight='bold')
+	plt.ylabel('Throughput (Request/Second)', fontsize=14,fontweight='bold')
+	plt.xlabel('Seconds', fontsize=14,fontweight='bold')
+	# plt.ylim([0,80])
 	# plt.ylim((0,600))
 	c=[]
 	a=c
@@ -430,10 +558,24 @@ def parsing(pathOfLogs):
 	# 		y.append(indThr)
 	# 	x=range(count+1)
 	# 	plt.plot(y)
-	print("Final size of a {0}".format(len(a)))
-	plt.plot(a)
+	# print("Final size of a {0}".format(len(a)))
+
+	plt.plot(a,linewidth=2.0)
+
+	# plt.figure(5)
+	# # plt.ylim([0,0])
+	# plt.hold(True)
+	# plt.errorbar(x=range(len(mean_over_client)),y=mean_over_client,yerr=sem_over_client)
+	
+	# plt.figure(6)
+	# # plt.ylim([0,5])
+	# plt.hold(True)
+	# plt.errorbar(x=range(len(mean_over_middleware)),y=mean_over_middleware,yerr=sem_over_middleware)
+	print("Average Throughput in the Middleware:\t{0}".format(np.mean(a)))
+	print("Total # of requests in Middleware:\t{0}".format(total_of_requests))
 	plt.show()
 	# export to cvs
+	# a=zip(a)
 	# with open("{0}throughput.csv".format(pathOfLogs), "wb") as f:
 	# 	writer = csv.writer(f)
 	# 	writer.writerows(a)
@@ -447,8 +589,7 @@ def parsing(pathOfLogs):
 	# 	writer = csv.writer(f)
 	# 	writer.writerows(database)
 	# end export 
-	
-	
+
 	
 
 
