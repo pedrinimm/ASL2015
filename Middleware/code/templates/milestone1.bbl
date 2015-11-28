@@ -1,0 +1,11 @@
+\begin{thebibliography}{1}
+
+\bibitem{oracle}
+Oracle.
+\newblock A little thread privacy please.
+
+\bibitem{postsql}
+Postgres.
+\newblock Postgresql sql-prepared statements.
+
+\end{thebibliography}
