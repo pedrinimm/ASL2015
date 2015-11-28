@@ -14,6 +14,7 @@ public class Put_3 {
 			public static final String callableFunction = "{call put_3(?,?,?,?,?,?)}";
 			
 //			for testing the databse connection
+
 			public static Connection connection_1 = null;
 			public static DatabaseConnectorServer connectingServer;
 			
@@ -80,7 +81,7 @@ public class Put_3 {
 			}
 //			create new message
 			Message newMessage=new Message("sender_1");
-			String queueID="";
+			String queueName="";
 			newMessage.reciever="perritos";
 //			queueID = database.GetQueue.execute_query(connection_1, "general");
 //			if(!queueID.equals("")){

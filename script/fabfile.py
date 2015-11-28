@@ -29,9 +29,9 @@ env.roledefs= {
 	'dryad01':['mpedro@dryad01'],
 	'dryad08':['mpedro@dryad08'],
 	'local':['pedrini@localhost'],
-	'dbAmazon':['ubuntu@52.30.174.216'],
-	'midAmazon':['ubuntu@52.30.110.167'],
-	'cliAmazon':['ubuntu@52.30.162.52'],
+	'dbAmazon':['ubuntu@52.19.154.193'],
+	'midAmazon':['ubuntu@52.19.118.192'],
+	'cliAmazon':['ubuntu@54.72.157.210'],
 	'midAmazon2':['ubuntu@52.16.196.151'],
 	'cliAmazon2':['ubuntu@52.17.70.107'],
 	'midAmazon3':['ubuntu@52.18.179.82'],
@@ -491,7 +491,7 @@ def parsing(pathOfLogs):
 		
 		mean_over_client.append(np.mean(x))
 		sem_over_client.append(stats.sem(x))
-		print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}\t Std. Dev.\t{3}".format(i,len(x),np.mean(x),np.std(x)))
+		# print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}\t Std. Dev.\t{3}".format(i,len(x),np.mean(x),np.std(x)))
 		# esta es solo para el final no olvides comentarla 
 		# print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x)/60,np.mean(x)))
 		i=i+1
@@ -520,7 +520,7 @@ def parsing(pathOfLogs):
 		mean_over_middleware.append(np.mean(x))
 		sem_over_middleware.append(stats.sem(x))
 		total_of_requests=total_of_requests+len(x)
-		# print("Client_Handler_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		# print("Client_Handler_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}\t Std. Dev.\t{3}".format(i,len(x),np.mean(x),np.std(x)))
 		i=i+1
 		plt.plot(x)
 	print("\nAverage total of waiting time for all Client Hanlders\t{0}".format(np.mean(mean_over_middleware)))
@@ -612,7 +612,7 @@ def parsing(pathOfLogs):
 	# print(float(len(a))/total_of_requests)
 	util=np.mean(a)*(float(len(a))/total_of_requests)
 	print("Utilization Law \tX={0}\tS={1}\tU={2}".format(np.mean(a),float(len(a))/total_of_requests,util))
-	plt.show()
+	# plt.show()
 	# export to cvs
 	# a=zip(a)
 	# with open("{0}throughput.csv".format(pathOfLogs), "wb") as f:
