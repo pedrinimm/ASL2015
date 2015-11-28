@@ -15,7 +15,7 @@
 \newlabel{sec:design-decisions}{{1.1.3}{4}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.1.4}Performance characteristics}{4}}
 \newlabel{sec:performance-characteristics}{{1.1.4}{4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Database performance evaluation in a t2.medium amazon instance, increasing the number of client in order to observe the maximum amount of transaction it can process.\relax }}{4}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Database performance evaluation in a t2.medium amazon instance, increasing the number of clients in order to observe the maximum amount of transaction it can process.\relax }}{4}}
 \newlabel{pgbench}{{2}{4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Middleware}{5}}
 \newlabel{sec:middleware}{{1.2}{5}}
@@ -25,62 +25,80 @@
 \newlabel{middle}{{3}{5}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Interfacing with clients}{6}}
 \newlabel{sec:interfacing-with-clients}{{1.2.2}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces List of operations that can be performed by the client and their protocol number\relax }}{6}}
+\newlabel{opera}{{1}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Queuing and Connection pool to database}{6}}
 \newlabel{sec:queuing-and-connection-pool-to-database}{{1.2.3}{6}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Behavior of the system, M and N is the number of connection in each pool, the may be equal or differetn. The number of connections in the pool may affect the througput in the system.\relax }}{6}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Behavior of the system, M and N is the number of connection in each pool, the may be equal or different. The number of connections in the pool affects the througput in the system.\relax }}{6}}
 \newlabel{pool}{{4}{6}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.4}Performance characteristics}{7}}
 \newlabel{sec:performance-characteristics-1}{{1.2.4}{7}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Clients}{7}}
-\newlabel{sec:clients}{{1.3}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.1}Design and interface}{7}}
-\newlabel{sec:design-and-interface}{{1.3.1}{7}}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Client, middleware and database interaction procesdure. This diagram show the operations that a client can requesta and the behavior between thr C:Client, M:Middleware and D:Database.\relax }}{7}}
-\newlabel{interaction}{{5}{7}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.2}Instrumentation}{8}}
-\newlabel{sec:instrumentation}{{1.3.2}{8}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.3}Workloads and deployment}{8}}
-\newlabel{sec:workloads-and-deployment}{{1.3.3}{8}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.4}Sanity checks}{8}}
-\newlabel{sec:sanity-checks}{{1.3.4}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{8}}
-\newlabel{sec:experimental-setup}{{2}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}System Configurations}{8}}
-\newlabel{sec:system-configurations}{{2.1}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Configuration and Deployment mechanisms}{8}}
-\newlabel{sec:configuration-and-deployment-mechanisms}{{2.2}{8}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Logging and Benchmarking mechanisms}{8}}
-\newlabel{sec:logging-and-benchmarking-mechanisms}{{2.3}{8}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Different logging entry point during the lifespan of a single request in the messaging system\relax }}{8}}
-\newlabel{logging}{{6}{8}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation}{9}}
-\newlabel{sec:evaluation}{{3}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}System Stability}{9}}
-\newlabel{sec:system-stability}{{3.1}{9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces \relax }}{9}}
-\newlabel{stabilityRP}{{7}{9}}
-\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces \relax }}{9}}
-\newlabel{stabilityTHR}{{8}{9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}System Throughput}{10}}
-\newlabel{sec:system-throughput}{{3.2}{10}}
-\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces \relax }}{10}}
-\newlabel{through}{{9}{10}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces \relax }}{11}}
-\newlabel{scaleup}{{1}{11}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces \relax }}{11}}
-\newlabel{scaleout}{{2}{11}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}System Scalability}{11}}
-\newlabel{sec:system-scalability}{{3.3}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Clients}{8}}
+\newlabel{sec:clients}{{1.3}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.1}Design and interface}{8}}
+\newlabel{sec:design-and-interface}{{1.3.1}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Client, middleware and database interaction procedure. This diagram show the operations that a client can request and the behavior between thr C:Client, M:Middleware and D:Database.\relax }}{8}}
+\newlabel{interaction}{{5}{8}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.2}Instrumentation}{9}}
+\newlabel{sec:instrumentation}{{1.3.2}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.3}Workloads and deployment}{9}}
+\newlabel{sec:workloads-and-deployment}{{1.3.3}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Full run of experiment and parsing command\relax }}{9}}
+\newlabel{fig:deploy}{{6}{9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.3.4}Sanity checks}{10}}
+\newlabel{sec:sanity-checks}{{1.3.4}{10}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Experimental Setup}{10}}
+\newlabel{sec:experimental-setup}{{2}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}System Configurations}{10}}
+\newlabel{sec:system-configurations}{{2.1}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Configuration and Deployment mechanisms}{10}}
+\newlabel{sec:configuration-and-deployment-mechanisms}{{2.2}{10}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Logging and Benchmarking mechanisms}{10}}
+\newlabel{sec:logging-and-benchmarking-mechanisms}{{2.3}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Different logging entry points during the lifespan of a single request in the messaging system\relax }}{11}}
+\newlabel{logging}{{7}{11}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Evaluation}{11}}
+\newlabel{sec:evaluation}{{3}{11}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}System Stability}{11}}
+\newlabel{sec:system-stability}{{3.1}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Plot with response time in different clients perfmorming distinct operations in the middleware\relax }}{11}}
+\newlabel{stabilityRP}{{8}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Throughput during stability run over 30 minutes\relax }}{12}}
+\newlabel{stabilityTHR}{{9}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}System Throughput}{12}}
+\newlabel{sec:system-throughput}{{3.2}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Number of clients vs Throughput and Latency, maximum througput level achieved with incremental on response time.\relax }}{12}}
+\newlabel{through}{{10}{12}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}System Scalability}{13}}
+\newlabel{sec:system-scalability}{{3.3}{13}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Scalep up setting with single machine, increasing constanlty connections and client handlers\relax }}{13}}
+\newlabel{scaleup}{{2}{13}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Scaling out setting with fixed paramters in connections and client handlers but constant incremental of middleware nodes and client machines\relax }}{14}}
+\newlabel{scaleout}{{3}{14}}
+\newlabel{fig:subim1}{{11a}{14}}
+\newlabel{sub@fig:subim1}{{a}{14}}
+\newlabel{fig:subim2}{{11b}{14}}
+\newlabel{sub@fig:subim2}{{b}{14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Results in scalability experiment\relax }}{14}}
+\newlabel{fig:image2}{{11}{14}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Response Time Variations}{14}}
+\newlabel{sec:response-time-variations}{{3.4}{14}}
+\citation{oracle}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Response time for clients during incremental in the message size\relax }}{15}}
+\newlabel{response}{{12}{15}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}$2^k$ Experiment}{15}}
+\newlabel{sec:k-experiment}{{3.5}{15}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Throughput metric results for different settings of the $2^k $ experiment\relax }}{16}}
+\newlabel{2k}{{4}{16}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Wieghts on the response variables\relax }}{16}}
+\newlabel{2kr}{{5}{16}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Throughput metric results for different settings of the $2^k $ experiment with clients and middlewares\relax }}{17}}
+\newlabel{2k2}{{6}{17}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Wieghts on the response variables\relax }}{17}}
+\newlabel{2kr2}{{7}{17}}
 \bibstyle{plain}
 \bibdata{sample}
-\bibcite{postsql}{1}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces \relax }}{12}}
-\newlabel{2k}{{3}{12}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces \relax }}{12}}
-\newlabel{2kr}{{4}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Response Time Variations}{12}}
-\newlabel{sec:response-time-variations}{{3.4}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}$2^k$ Experiment}{12}}
-\newlabel{sec:k-experiment}{{3.5}{12}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Conclusion}{13}}
-\newlabel{sec:conclusion}{{3.6}{13}}
+\bibcite{oracle}{1}
+\bibcite{postsql}{2}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Conclusion}{18}}
+\newlabel{sec:conclusion}{{3.6}{18}}

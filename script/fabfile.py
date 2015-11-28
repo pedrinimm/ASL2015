@@ -32,12 +32,13 @@ env.roledefs= {
 	'dbAmazon':['ubuntu@52.30.174.216'],
 	'midAmazon':['ubuntu@52.30.110.167'],
 	'cliAmazon':['ubuntu@52.30.162.52'],
-	'midAmazon2':['ubuntu@52.30.183.159'],
-	'cliAmazon2':['ubuntu@52.30.226.12'],
+	'midAmazon2':['ubuntu@52.16.196.151'],
+	'cliAmazon2':['ubuntu@52.17.70.107'],
 	'midAmazon3':['ubuntu@52.18.179.82'],
 	'cliAmazon3':['ubuntu@52.19.77.148'],
 	'midAmazon4':['ubuntu@52.30.117.151'],
 	'cliAmazon4':['ubuntu@52.30.240.167'],
+	'testing':['ubuntu@52.31.61.228'],
 	'dryad02':['mpedro@dryad02']
 }
 
@@ -89,6 +90,19 @@ def getClientLog(experimentID):
 	local("mkdir ./logs_exp_%S/clients"% experimentID)
 	get(remote_path="./*.log", local_path="./logs_exp_%S/clients"% experimentID)
 
+def testingClient(experimentID,duration,serverPort,serverAddress,operationType,workload,noClients,messageType):
+	# fab -R testing testingClient:experimentID=only_client,duration=60,serverPort=5433,serverAddress=52.30.110.167,operationType=5,workload=0,noClients=65,messageType=7
+	# local("fab -R testing intsallBasicTools")
+	local("fab -R testing moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
+
+	local("date")
+	print(100)
+	time.sleep(100)
+	local("mkdir logs_exp_{0}_1".format(experimentID))
+	
+	local("fab -R testing getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
+
+
 def fullAmazon1(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,operationType,workload,noClients,messageType):
 	# fab -R local fullAmazon1:experimentID=resp_time_1_mid1_cl5_msg1,dbServer=52.30.174.216,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=15,listeningPort=5432,noConnDB=5,duration=180,serverPort=5433,serverAddress=52.30.110.167,operationType=5,workload=0,noClients=15,messageType=1
 	# local("mkdir logs_exp_{0}".format(experimentID))
@@ -115,7 +129,8 @@ def fullAmazon1(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,l
 	
 
 def fullAmazon2(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,operationType,workload,noClients,messageType):
-	# fab -R local fullAmazon2:experimentID=scalability_1_cl15_mid2_con5,dbServer=52.31.51.37,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=5,listeningPort=5432,noConnDB=5,duration=180,serverPort=5433,serverAddress=52.31.51.163,serverAddress2=52.31.51.163,operationType=5,workload=0,noClients=15,messageType=2
+	# fab -R local fullAmazon2:experimentID=resp_time_3_mid2_cl5_msg0,dbServer=52.30.174.216,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=15,listeningPort=5432,noConnDB=5,duration=300,serverPort=5433,serverAddress=52.30.110.167,serverAddress2=52.16.196.151,operationType=5,workload=0,noClients=15,messageType=0
+
 	# local("mkdir logs_exp_{0}".format(experimentID))
 
 	# local("fab -R local installDBAmazon")
@@ -126,20 +141,20 @@ def fullAmazon2(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,l
 	# local("fab -R cliAmazon2 intsallBasicTools")
 
 	local("fab -R midAmazon moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
-	local("fab -R midAmazon2 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
+	# local("fab -R midAmazon2 moveCompileMiddleAmazon:dbServer={0},dbName={1},dbUser={2},dbPassword={3},noOfConnections={4},listeningPort={5},noConnDB={6}".format(dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB))
 	local("fab -R cliAmazon moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
-	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress2,operationType,workload,noClients,messageType))
+	local("fab -R cliAmazon2 moveCompileClientsAmazon:duration={0},serverPort={1},serverAddress={2},operationType={3},workload={4},noClients={5},messageType={6}".format(duration,serverPort,serverAddress,operationType,workload,noClients,messageType))
 	# wait for a cliens to be done
-	# waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
+	waitTime=math.ceil(float(noClients)/float(noOfConnections))*(float(duration)+40.0)
 	local("date")
-	print(600)
+	print(640)
 	time.sleep(640)
 	local("mkdir logs_exp_{0}_1".format(experimentID))
 	local("mkdir logs_exp_{0}_2".format(experimentID))
 	local("fab -R cliAmazon getLogsCliAmaz:destination=logs_exp_{0}_1".format(experimentID))
 	local("fab -R midAmazon getLogsMidAmaz:destination=logs_exp_{0}_1".format(experimentID))
 	local("fab -R cliAmazon2 getLogsCliAmaz:destination=logs_exp_{0}_2".format(experimentID))
-	local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_2".format(experimentID))
+	# local("fab -R midAmazon2 getLogsMidAmaz:destination=logs_exp_{0}_2".format(experimentID))
 
 def fullAmazon3(experimentID,dbServer,dbName,dbUser,dbPassword,noOfConnections,listeningPort,noConnDB,duration,serverPort,serverAddress,serverAddress2,serverAddress3,operationType,workload,noClients,messageType):
 	# fab -R local fullAmazon:experimentID=thr_mid3_cl68,dbServer=52.17.148.247,dbName=messaging,dbUser=postgres,dbPassword=squirrel,noOfConnections=100,listeningPort=5432,noConnDB=30,duration=300,serverPort=5433,serverAddress=52.31.51.163,serverAddress2=52.30.183.159,serverAddress3=52.30.200.160,operationType=5,workload=0,noClients=68,messageType=2
@@ -476,11 +491,15 @@ def parsing(pathOfLogs):
 		
 		mean_over_client.append(np.mean(x))
 		sem_over_client.append(stats.sem(x))
-		print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}\t Std. Dev.\t{3}".format(i,len(x),np.mean(x),np.std(x)))
+		# esta es solo para el final no olvides comentarla 
+		# print("Client_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x)/60,np.mean(x)))
 		i=i+1
 		plt.plot(x)
 
-	print("\nAverage total of waiting time for all clients\t{0}\n".format(np.mean(mean_over_client)))
+	print("\nAverage total of waiting time for all clients\t{0}".format(np.mean(mean_over_client)))
+	print("Standard Deviation total of waiting time for all clients\t{0}".format(np.std(mean_over_client)))
+	print("Standard Error total of waiting time for all clients\t{0}".format(stats.sem(mean_over_client)))
 	plt.figure(2)
 	plt.hold(True)
 	plt.suptitle('Middleware')
@@ -501,15 +520,23 @@ def parsing(pathOfLogs):
 		mean_over_middleware.append(np.mean(x))
 		sem_over_middleware.append(stats.sem(x))
 		total_of_requests=total_of_requests+len(x)
-		print("Client_Handler_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		# print("Client_Handler_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
 		i=i+1
 		plt.plot(x)
+	print("\nAverage total of waiting time for all Client Hanlders\t{0}".format(np.mean(mean_over_middleware)))
+	print("Standard Deviation total of waiting time for all Client Hanlders\t{0}".format(np.std(mean_over_middleware)))
+	print("Standard Error total of waiting time for all Client Hanlders\t{0}".format(stats.sem(mean_over_middleware)))
 	plt.figure(3)
 	plt.hold(True)
 	plt.suptitle('Database')
 	plt.ylabel('Response Time (ms)', fontsize=14)
 	plt.xlabel('# of Request', fontsize=14)
 	# plt.ylim((0,600))
+	mean_over_database=[]
+	sem_over_database=[]
+	total_of_requests_db=0
+	i=1
+	print("\n")
 	for item in database:
 		x=[]
 		y=[]
@@ -517,8 +544,15 @@ def parsing(pathOfLogs):
 		for measure in item:
 			x.append(measure[4])
 			y.append(measure)
+		# print("Client_Handler_DB_{0}\tRequests\t{1}\tAvg. Resp. Time\t{2}".format(i,len(x),np.mean(x)))
+		mean_over_database.append(np.mean(x))
+		sem_over_database.append(stats.sem(x))
+		total_of_requests_db=total_of_requests_db+len(x)
+		i=i+1
 		plt.plot(x)
-
+	print("Average total of waiting time for all Database\t{0}".format(np.mean(mean_over_database)))
+	print("Standard Deviation total of waiting time for all Database\t{0}".format(np.std(mean_over_database)))
+	print("Standard Error total of waiting time for all Database\t{0}\n".format(stats.sem(mean_over_database)))
 	plt.figure(4)
 	plt.hold(True)
 	plt.suptitle('Middleware Throughput',fontsize=20,fontweight='bold')
@@ -572,7 +606,12 @@ def parsing(pathOfLogs):
 	# plt.hold(True)
 	# plt.errorbar(x=range(len(mean_over_middleware)),y=mean_over_middleware,yerr=sem_over_middleware)
 	print("Average Throughput in the Middleware:\t{0}".format(np.mean(a)))
-	print("Total # of requests in Middleware:\t{0}".format(total_of_requests))
+	print("Standard Deviation of Throughput in the Middleware:\t{0}".format(np.std(a)))
+	print("Standard Error of Throughput in the Middleware:\t{0}".format(stats.sem(a)))
+	print("Total # of requests in Middleware:\t{0}\n".format(total_of_requests))
+	# print(float(len(a))/total_of_requests)
+	util=np.mean(a)*(float(len(a))/total_of_requests)
+	print("Utilization Law \tX={0}\tS={1}\tU={2}".format(np.mean(a),float(len(a))/total_of_requests,util))
 	plt.show()
 	# export to cvs
 	# a=zip(a)
